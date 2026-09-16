@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Heygo KOL Partner Hub | 创作者合作中心</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23c4ff4d'/><text x='50' y='68' font-size='52' font-weight='900' text-anchor='middle' fill='%230a0a0a' font-family='Arial'>H</text></svg>">
+<style>
+/* ===== Reset & Base ===== */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  background:#0a0a0a;color:#fff;line-height:1.6;overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+img{max-width:100%;display:block}
+::selection{background:#c4ff4d;color:#0a0a0a}
+
+/* ===== Variables ===== */
+:root{
+  --bg:#0a0a0a;
+  --card:#161616;
+  --card2:#1e1e1e;
+  --border:#2a2a2a;
+  --text:#fff;
+  --text2:#999;
+  --text3:#666;
+  --accent:#c4ff4d;
+  --accent-dim:#a8e040;
+  --radius:16px;
+  --radius-sm:10px;
+  --maxw:1200px;
+}
+
+/* ===== Nav ===== */
+.nav{
+  position:fixed;top:16px;left:50%;transform:translateX(-50%);
+  z-index:1000;width:min(96%,var(--maxw));
+  background:rgba(16,16,16,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border:1px solid var(--border);border-radius:999px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 24px;transition:all .3s;
+}
+.nav.scrolled{box-shadow:0 8px 32px rgba(0,0,0,.5)}
+.nav-logo{font-weight:900;font-size:22px;letter-spacing:-.5px;display:flex;align-items:center;gap:8px}
+.nav-logo img{height:38px;width:auto;display:block}
+.nav-logo span{color:var(--accent)}
+.nav-links{display:flex;gap:4px;align-items:center}
+.nav-links a{
+  padding:6px 14px;border-radius:999px;font-size:14px;color:var(--text2);
+  transition:all .2s;white-space:nowrap;
+}
+.nav-links a:hover{color:#fff;background:rgba(255,255,255,.06)}
+.nav-cta{
+  background:var(--accent);color:#0a0a0a;font-weight:700;font-size:14px;
+  padding:8px 20px;border-radius:999px;transition:all .2s;white-space:nowrap;
+}
+.nav-cta:hover{background:#fff;transform:translateY(-1px)}
+.nav-toggle{display:none;flex-direction:column;gap:4px;padding:8px}
+.nav-toggle span{width:20px;height:2px;background:#fff;transition:all .3s}
+
+/* ===== Hero ===== */
+.hero{
+  position:relative;min-height:100vh;display:flex;flex-direction:column;
+  justify-content:center;align-items:center;text-align:center;
+  padding:120px 24px 80px;overflow:hidden;
+}
+.hero-bg{
+  position:absolute;inset:0;z-index:0;
+  background:url('assets/hero-bg.jpg') center/cover no-repeat;
+}
+.hero-bg::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(10,10,10,.55) 0%,rgba(10,10,10,.75) 50%,rgba(10,10,10,1) 100%);
+}
+.hero-content{position:relative;z-index:1;max-width:800px}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(196,255,77,.12);border:1px solid rgba(196,255,77,.3);
+  color:var(--accent);padding:6px 16px;border-radius:999px;
+  font-size:13px;font-weight:600;margin-bottom:28px;
+}
+.hero-badge::before{content:'';width:6px;height:6px;background:var(--accent);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.hero h1{
+  font-size:clamp(42px,7vw,84px);font-weight:900;line-height:1.02;
+  letter-spacing:-2px;margin-bottom:24px;
+}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero p{
+  font-size:clamp(16px,2vw,20px);color:var(--text2);max-width:560px;
+  margin:0 auto 40px;line-height:1.7;
+}
+.hero-actions{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:64px}
+.btn-primary{
+  background:var(--accent);color:#0a0a0a;font-weight:700;font-size:16px;
+  padding:14px 32px;border-radius:999px;transition:all .25s;display:inline-flex;align-items:center;gap:8px;
+}
+.btn-primary:hover{background:#fff;transform:translateY(-2px);box-shadow:0 8px 24px rgba(196,255,77,.3)}
+.btn-ghost{
+  background:rgba(255,255,255,.08);color:#fff;font-weight:600;font-size:16px;
+  padding:14px 32px;border-radius:999px;border:1px solid var(--border);
+  transition:all .25s;display:inline-flex;align-items:center;gap:8px;
+}
+.btn-ghost:hover{background:rgba(255,255,255,.14);border-color:#444}
+
+/* Quick Nav Cards */
+.quick-nav{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:12px;
+  max-width:800px;width:100%;position:relative;z-index:1;
+}
+.quick-card{
+  background:rgba(22,22,22,.7);backdrop-filter:blur(10px);
+  border:1px solid var(--border);border-radius:var(--radius-sm);
+  padding:18px 16px;text-align:left;transition:all .25s;cursor:pointer;
+}
+.quick-card:hover{border-color:var(--accent);background:rgba(196,255,77,.06);transform:translateY(-3px)}
+.quick-card .qc-icon{
+  width:36px;height:36px;border-radius:10px;background:rgba(196,255,77,.12);
+  display:flex;align-items:center;justify-content:center;margin-bottom:10px;
+}
+.quick-card .qc-icon svg{width:18px;height:18px;stroke:var(--accent);fill:none;stroke-width:2}
+.quick-card h4{font-size:14px;font-weight:700;margin-bottom:2px}
+.quick-card p{font-size:12px;color:var(--text3);margin:0}
+
+/* ===== Section Common ===== */
+.section{padding:100px 24px;max-width:var(--maxw);margin:0 auto}
+.section-label{
+  display:inline-flex;align-items:center;gap:8px;
+  color:var(--accent);font-size:13px;font-weight:700;
+  text-transform:uppercase;letter-spacing:1.5px;margin-bottom:16px;
+}
+.section-label::before{content:'';width:24px;height:2px;background:var(--accent)}
+.section h2{
+  font-size:clamp(30px,4.5vw,52px);font-weight:900;line-height:1.1;
+  letter-spacing:-1px;margin-bottom:16px;
+}
+.section-desc{font-size:17px;color:var(--text2);max-width:600px;margin-bottom:56px}
+
+/* ===== Product Overview ===== */
+.product-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+.product-img{
+  border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);
+  position:relative;
+}
+.product-img img{width:100%;height:480px;object-fit:cover}
+.product-img::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,transparent 60%,rgba(196,255,77,.08));
+}
+.features-list{display:flex;flex-direction:column;gap:24px}
+.feature-item{display:flex;gap:18px;align-items:flex-start}
+.feature-icon{
+  flex-shrink:0;width:48px;height:48px;border-radius:14px;
+  background:linear-gradient(135deg,rgba(196,255,77,.15),rgba(196,255,77,.05));
+  border:1px solid rgba(196,255,77,.2);
+  display:flex;align-items:center;justify-content:center;
+}
+.feature-icon svg{width:22px;height:22px;stroke:var(--accent);fill:none;stroke-width:2}
+.feature-item h4{font-size:18px;font-weight:700;margin-bottom:6px}
+.feature-item p{font-size:15px;color:var(--text2);line-height:1.6}
+
+/* Specs Table */
+.specs-wrap{margin-top:64px}
+.specs-wrap h3{font-size:22px;font-weight:800;margin-bottom:24px}
+.specs-table{width:100%;border-collapse:collapse;border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden}
+.specs-table th,.specs-table td{padding:14px 20px;text-align:left;border-bottom:1px solid var(--border)}
+.specs-table th{background:var(--card2);font-weight:700;font-size:14px;color:var(--text2);width:30%}
+.specs-table td{font-size:15px}
+.specs-table tr:last-child th,.specs-table tr:last-child td{border-bottom:none}
+.specs-table tr:hover td{background:rgba(196,255,77,.03)}
+
+/* Audience tags */
+.audience-tags{display:flex;gap:10px;flex-wrap:wrap;margin-top:32px}
+.audience-tag{
+  padding:8px 18px;border-radius:999px;font-size:14px;font-weight:600;
+  background:var(--card);border:1px solid var(--border);color:var(--text2);
+}
+.audience-tag.highlight{background:rgba(196,255,77,.1);border-color:rgba(196,255,77,.3);color:var(--accent)}
+
+.audience-section{margin-top:64px}
+.audience-section h3{font-size:22px;font-weight:800;margin-bottom:24px}
+.audience-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.audience-card{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+  padding:28px 24px;transition:all .25s;
+}
+.audience-card:hover{border-color:var(--accent);transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.3)}
+.audience-card .ac-icon{
+  width:48px;height:48px;border-radius:14px;
+  background:linear-gradient(135deg,rgba(196,255,77,.15),rgba(196,255,77,.05));
+  border:1px solid rgba(196,255,77,.2);
+  display:flex;align-items:center;justify-content:center;margin-bottom:18px;
+}
+.audience-card .ac-icon svg{width:22px;height:22px;stroke:var(--accent);fill:none;stroke-width:2}
+.audience-card h4{font-size:18px;font-weight:700;margin-bottom:10px}
+.audience-card p{font-size:14px;color:var(--text2);line-height:1.7}
+
+.features-showcase{margin-top:64px}
+.features-showcase h3{font-size:22px;font-weight:800;margin-bottom:24px}
+.features-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+.feature-item{border-radius:var(--radius-sm);overflow:hidden;border:1px solid var(--border);transition:all .25s;background:var(--card);cursor:pointer}
+.feature-item:hover{transform:translateY(-4px);border-color:var(--accent);box-shadow:0 12px 32px rgba(0,0,0,.3)}
+.feature-item:hover .feature-name{color:var(--accent)}
+.feature-item img{width:100%;aspect-ratio:1;object-fit:cover;display:block;transition:transform .3s}
+.feature-item:hover img{transform:scale(1.03)}
+.feature-item .feature-name{padding:12px 10px;font-size:13px;font-weight:600;text-align:center;color:var(--text2);transition:color .2s}
+
+/* Lightbox */
+.lightbox{display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);align-items:center;justify-content:center}
+.lightbox.active{display:flex}
+.lightbox-img{max-width:88vw;max-height:82vh;object-fit:contain;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.lightbox-close{position:absolute;top:24px;right:32px;font-size:32px;color:#fff;background:rgba(255,255,255,.1);width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:all .2s;line-height:1}
+.lightbox-close:hover{background:var(--accent);color:#0a0a0a;transform:rotate(90deg)}
+.lightbox-prev,.lightbox-next{position:absolute;top:50%;transform:translateY(-50%);font-size:20px;color:#fff;background:rgba(255,255,255,.1);width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.lightbox-prev{left:32px}.lightbox-next{right:32px}
+.lightbox-prev:hover,.lightbox-next:hover{background:var(--accent);color:#0a0a0a;transform:translateY(-50%) scale(1.1)}
+.lightbox-counter{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);font-size:14px;color:var(--text2);background:rgba(0,0,0,.5);padding:6px 18px;border-radius:999px;letter-spacing:1px}
+.lightbox-caption{position:absolute;bottom:70px;left:50%;transform:translateX(-50%);font-size:16px;font-weight:700;color:#fff;letter-spacing:.5px}
+
+/* ===== Asset Library ===== */
+.asset-filters{display:flex;gap:8px;margin-bottom:32px;flex-wrap:wrap}
+.filter-btn{
+  padding:8px 20px;border-radius:999px;font-size:14px;font-weight:600;
+  background:var(--card);border:1px solid var(--border);color:var(--text2);
+  transition:all .2s;
+}
+.filter-btn.active,.filter-btn:hover{background:var(--accent);color:#0a0a0a;border-color:var(--accent)}
+.asset-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.asset-card{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+  overflow:hidden;transition:all .25s;
+}
+.asset-card:hover{border-color:#444;transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.4)}
+.asset-thumb{
+  height:180px;background:var(--card2);position:relative;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+}
+.asset-thumb img{width:100%;height:100%;object-fit:cover}
+.asset-thumb .asset-type{
+  position:absolute;top:12px;left:12px;
+  background:rgba(0,0,0,.7);backdrop-filter:blur(8px);
+  padding:4px 12px;border-radius:999px;font-size:11px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.5px;color:var(--accent);
+}
+.asset-body{padding:18px}
+.asset-body h4{font-size:15px;font-weight:700;margin-bottom:4px}
+.asset-body p{font-size:13px;color:var(--text3);margin-bottom:14px}
+.asset-meta{display:flex;justify-content:space-between;align-items:center}
+.asset-size{font-size:12px;color:var(--text3)}
+.download-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(196,255,77,.1);color:var(--accent);
+  padding:6px 14px;border-radius:8px;font-size:13px;font-weight:600;
+  transition:all .2s;border:1px solid rgba(196,255,77,.2);
+}
+.download-btn:hover{background:var(--accent);color:#0a0a0a}
+.download-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2}
+
+/* ===== Content Guide ===== */
+.content-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px}
+.direction-cards{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.dir-card{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);
+  padding:24px;transition:all .25s;
+}
+.dir-card:hover{border-color:var(--accent);background:rgba(196,255,77,.04)}
+.dir-card .dir-num{
+  font-size:32px;font-weight:900;color:var(--accent);opacity:.4;
+  line-height:1;margin-bottom:12px;
+}
+.dir-card h4{font-size:16px;font-weight:700;margin-bottom:8px}
+.dir-card p{font-size:13px;color:var(--text2);line-height:1.6}
+.dir-card.wide{grid-column:1 / -1}
+
+/* Script Templates */
+.script-block{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);
+  overflow:hidden;margin-bottom:16px;
+}
+.script-header{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:14px 18px;background:var(--card2);border-bottom:1px solid var(--border);
+}
+.script-header h4{font-size:14px;font-weight:700}
+.copy-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:12px;font-weight:600;color:var(--text2);
+  padding:5px 12px;border-radius:6px;background:rgba(255,255,255,.05);
+  transition:all .2s;
+}
+.copy-btn:hover{color:var(--accent);background:rgba(196,255,77,.1)}
+.copy-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2}
+.script-body{padding:18px;font-size:14px;color:var(--text2);line-height:1.8;white-space:pre-wrap}
+
+/* Publish Rules */
+.rules-list{margin-top:32px;display:flex;flex-direction:column;gap:14px}
+.rule-item{
+  display:flex;gap:14px;align-items:flex-start;
+  padding:16px 20px;background:var(--card);border:1px solid var(--border);
+  border-radius:var(--radius-sm);border-left:3px solid var(--accent);
+}
+.rule-item svg{width:20px;height:20px;stroke:var(--accent);fill:none;stroke-width:2;flex-shrink:0;margin-top:2px}
+.rule-item p{font-size:14px;color:var(--text2);line-height:1.6}
+.rule-item p strong{color:#fff;font-weight:700}
+
+/* ===== Test Guide (Timeline) ===== */
+.timeline{position:relative;padding-left:0}
+.timeline-grid{
+  display:grid;grid-template-columns:80px 40px 1fr;gap:0;
+  align-items:start;margin-bottom:0;
+}
+.tl-time{
+  font-size:14px;font-weight:700;color:var(--accent);
+  padding-top:6px;text-align:right;padding-right:16px;
+}
+.tl-axis{position:relative;display:flex;flex-direction:column;align-items:center;min-height:100%}
+.tl-dot{
+  width:16px;height:16px;border-radius:50%;background:var(--accent);
+  border:3px solid #0a0a0a;box-shadow:0 0 0 2px var(--accent);
+  flex-shrink:0;z-index:2;
+}
+.tl-line{
+  width:2px;flex:1;background:var(--border);min-height:40px;
+}
+.tl-content{
+  padding:0 0 40px 24px;
+}
+.tl-content h4{font-size:18px;font-weight:700;margin-bottom:8px}
+.tl-content p{font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:8px}
+.tl-content .tl-tip{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:12px;color:var(--accent);background:rgba(196,255,77,.08);
+  padding:4px 12px;border-radius:6px;margin-top:4px;
+}
+.tl-content .tl-tip svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2}
+
+/* Troubleshooting */
+.trouble-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:48px}
+.trouble-card{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);
+  padding:20px;
+}
+.trouble-card h5{
+  font-size:14px;font-weight:700;color:#ff6b6b;margin-bottom:10px;
+  display:flex;align-items:center;gap:8px;
+}
+.trouble-card h5 svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2}
+.trouble-card p{font-size:13px;color:var(--text2);line-height:1.6}
+.trouble-card .solution{
+  margin-top:10px;padding-top:10px;border-top:1px solid var(--border);
+  font-size:13px;color:var(--accent);
+}
+
+/* ===== Partnership ===== */
+.commission-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:56px}
+.comm-card{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+  padding:32px 28px;position:relative;overflow:hidden;transition:all .25s;
+}
+.comm-card.featured{border-color:var(--accent);background:linear-gradient(180deg,rgba(196,255,77,.06),var(--card))}
+.comm-card.featured::before{
+  content:'推荐';position:absolute;top:16px;right:16px;
+  background:var(--accent);color:#0a0a0a;font-size:11px;font-weight:800;
+  padding:3px 10px;border-radius:999px;
+}
+.comm-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.4)}
+.comm-tier{font-size:13px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+.comm-rate{font-size:48px;font-weight:900;color:var(--accent);line-height:1;margin-bottom:8px}
+.comm-rate span{font-size:20px;color:var(--text2)}
+.comm-desc{font-size:14px;color:var(--text2);margin-bottom:20px;line-height:1.6}
+.comm-list{list-style:none;display:flex;flex-direction:column;gap:10px}
+.comm-list li{font-size:13px;color:var(--text2);display:flex;align-items:center;gap:8px}
+.comm-list li svg{width:14px;height:14px;stroke:var(--accent);fill:none;stroke-width:2;flex-shrink:0}
+
+/* Settlement Flow */
+.flow-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-bottom:56px;position:relative}
+.flow-step{text-align:center;position:relative;padding:0 12px}
+.flow-step:not(:last-child)::after{
+  content:'';position:absolute;top:24px;right:-50%;width:100%;height:2px;
+  background:linear-gradient(90deg,var(--accent),var(--border));z-index:0;
+}
+.flow-num{
+  width:48px;height:48px;border-radius:50%;background:var(--card);
+  border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;
+  font-size:18px;font-weight:900;color:var(--accent);margin:0 auto 16px;
+  position:relative;z-index:1;
+}
+.flow-step h5{font-size:15px;font-weight:700;margin-bottom:6px}
+.flow-step p{font-size:12px;color:var(--text3);line-height:1.5}
+
+/* Discount Code Box */
+.discount-box{
+  background:linear-gradient(135deg,rgba(196,255,77,.08),rgba(196,255,77,.02));
+  border:1px solid rgba(196,255,77,.25);border-radius:var(--radius);
+  padding:36px 40px;display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:24px;
+}
+.discount-box h4{font-size:20px;font-weight:800;margin-bottom:6px}
+.discount-box p{font-size:14px;color:var(--text2)}
+.code-display{
+  display:flex;align-items:center;gap:16px;
+}
+.code-text{
+  font-size:28px;font-weight:900;letter-spacing:3px;color:var(--accent);
+  background:rgba(0,0,0,.4);padding:12px 28px;border-radius:12px;
+  border:1px dashed rgba(196,255,77,.4);font-family:"SF Mono",Monaco,monospace;
+}
+
+/* ===== FAQ ===== */
+.faq-list{max-width:800px;margin:0 auto}
+.faq-item{
+  border:1px solid var(--border);border-radius:var(--radius-sm);
+  margin-bottom:12px;overflow:hidden;background:var(--card);
+  transition:all .2s;
+}
+.faq-item.open{border-color:rgba(196,255,77,.3)}
+.faq-q{
+  width:100%;display:flex;justify-content:space-between;align-items:center;
+  padding:20px 24px;text-align:left;font-size:16px;font-weight:700;
+  transition:color .2s;
+}
+.faq-q:hover{color:var(--accent)}
+.faq-q .faq-icon{
+  width:28px;height:28px;border-radius:50%;background:rgba(196,255,77,.1);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  transition:all .3s;
+}
+.faq-q .faq-icon svg{width:14px;height:14px;stroke:var(--accent);fill:none;stroke-width:2.5;transition:transform .3s}
+.faq-item.open .faq-q .faq-icon svg{transform:rotate(45deg)}
+.faq-a{
+  max-height:0;overflow:hidden;transition:max-height .35s ease,padding .35s ease;
+  padding:0 24px;
+}
+.faq-item.open .faq-a{max-height:400px;padding:0 24px 20px}
+.faq-a p{font-size:14px;color:var(--text2);line-height:1.8}
+
+/* ===== Contact ===== */
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
+.contact-card{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+  padding:36px;
+}
+.contact-avatar{
+  width:72px;height:72px;border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),#8bc34a);
+  display:flex;align-items:center;justify-content:center;
+  font-size:28px;font-weight:900;color:#0a0a0a;margin-bottom:20px;
+}
+.contact-card h3{font-size:22px;font-weight:800;margin-bottom:4px}
+.contact-card .role{font-size:14px;color:var(--accent);font-weight:600;margin-bottom:20px}
+.contact-info{display:flex;flex-direction:column;gap:14px;margin-bottom:28px}
+.contact-info-item{display:flex;align-items:center;gap:12px;font-size:14px;color:var(--text2)}
+.contact-info-item svg{width:18px;height:18px;stroke:var(--accent);fill:none;stroke-width:2;flex-shrink:0}
+.contact-buttons{display:flex;gap:12px;flex-wrap:wrap}
+
+.contact-form-side h3{font-size:22px;font-weight:800;margin-bottom:8px}
+.contact-form-side>p{font-size:15px;color:var(--text2);margin-bottom:28px}
+.form-group{margin-bottom:20px}
+.form-group label{display:block;font-size:13px;font-weight:600;color:var(--text2);margin-bottom:8px}
+.form-group input,.form-group textarea,.form-group select{
+  width:100%;padding:12px 16px;background:var(--card);border:1px solid var(--border);
+  border-radius:var(--radius-sm);color:#fff;font-size:14px;font-family:inherit;
+  transition:border-color .2s;outline:none;
+}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:var(--accent)}
+.form-group textarea{resize:vertical;min-height:100px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+/* ===== Footer ===== */
+.footer{
+  border-top:1px solid var(--border);padding:48px 24px 32px;
+  max-width:var(--maxw);margin:0 auto;
+}
+.footer-top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:24px;margin-bottom:32px}
+.footer-logo{font-weight:900;font-size:24px}
+.footer-logo img{height:42px;width:auto;display:block}
+.footer-logo span{color:var(--accent)}
+.footer-links{display:flex;gap:24px;flex-wrap:wrap}
+.footer-links a{font-size:14px;color:var(--text2);transition:color .2s}
+.footer-links a:hover{color:var(--accent)}
+.footer-bottom{
+  display:flex;justify-content:space-between;align-items:center;
+  padding-top:24px;border-top:1px solid var(--border);
+  font-size:13px;color:var(--text3);flex-wrap:wrap;gap:12px;
+}
+
+/* ===== Toast ===== */
+.toast{
+  position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(100px);
+  background:var(--accent);color:#0a0a0a;font-weight:700;font-size:14px;
+  padding:12px 28px;border-radius:999px;z-index:9999;
+  transition:transform .35s cubic-bezier(.34,1.56,.64,1);
+  box-shadow:0 8px 32px rgba(196,255,77,.4);
+}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* ===== Responsive ===== */
+@media(max-width:1024px){
+  .quick-nav{grid-template-columns:repeat(2,1fr)}
+  .product-grid{grid-template-columns:1fr;gap:40px}
+  .asset-grid{grid-template-columns:repeat(2,1fr)}
+  .content-grid{grid-template-columns:1fr;gap:40px}
+  .commission-cards{grid-template-columns:1fr;max-width:480px}
+  .flow-steps{grid-template-columns:repeat(2,1fr);gap:32px}
+  .flow-step:not(:last-child)::after{display:none}
+  .contact-grid{grid-template-columns:1fr}
+  .trouble-grid{grid-template-columns:1fr}
+  .audience-cards{grid-template-columns:1fr}
+  .features-grid{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:768px){
+  .nav-links{display:none}
+  .nav-toggle{display:flex}
+  .nav-links.open{
+    display:flex;flex-direction:column;position:absolute;top:64px;left:0;right:0;
+    background:rgba(16,16,16,.97);backdrop-filter:blur(20px);
+    border:1px solid var(--border);border-radius:var(--radius);padding:16px;
+    align-items:stretch;
+  }
+  .nav-links.open a{padding:12px 16px}
+  .section{padding:64px 20px}
+  .hero{padding:100px 20px 60px}
+  .quick-nav{grid-template-columns:1fr 1fr;gap:10px}
+  .asset-grid{grid-template-columns:1fr}
+  .direction-cards{grid-template-columns:1fr}
+  .features-grid{grid-template-columns:repeat(2,1fr)}
+  .features-grid{grid-template-columns:repeat(2,1fr)}
+  .form-row{grid-template-columns:1fr}
+  .timeline-grid{grid-template-columns:60px 32px 1fr}
+  .discount-box{flex-direction:column;text-align:center}
+  .code-text{font-size:22px;padding:10px 20px}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== Nav ===== -->
+<nav class="nav" id="nav">
+  <a href="#" class="nav-logo"><img src="assets/heygo-logo-large.png" alt="Heygo"></a>
+  <div class="nav-links" id="navLinks">
+    <a href="#product">产品速览</a>
+    <a href="#content">内容指南</a>
+    <a href="#test">测试指南</a>
+    <a href="#partner">合作政策</a>
+    <a href="#assets">素材库</a>
+    <a href="#faq">FAQ</a>
+  </div>
+  <button class="nav-toggle" id="navToggle" aria-label="menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ===== Hero ===== -->
+<section class="hero" id="top">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-badge">KOL Partner Hub · 创作者合作中心</div>
+    <h1>这个雪季<br>Heygo 跟你<em>一起滑行</em></h1>
+    <p>Heygo 创作者合作中心为你提供产品资料、营销素材、内容指南和全流程支持，帮助你创作出真正打动滑雪爱好者的内容。</p>
+  </div>
+  <div class="quick-nav">
+    <a href="#product" class="quick-card">
+      <div class="qc-icon"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+      <h4>产品速览</h4>
+      <p>核心卖点与参数</p>
+    </a>
+    <a href="#content" class="quick-card">
+      <div class="qc-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+      <h4>内容指南</h4>
+      <p>方向 话术 规范</p>
+    </a>
+    <a href="#test" class="quick-card">
+      <div class="qc-icon"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+      <h4>测试指南</h4>
+      <p>上手全流程</p>
+    </a>
+    <a href="#partner" class="quick-card">
+      <div class="qc-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+      <h4>合作政策</h4>
+      <p>佣金与结算</p>
+    </a>
+  </div>
+</section>
+
+<!-- ===== Product Overview ===== -->
+<section class="section" id="product">
+  <div class="section-label">01 / Product Overview</div>
+  <h2>产品速览</h2>
+  <p class="section-desc">了解 Heygo 的核心价值，让你的内容更有说服力。</p>
+
+  <div class="product-grid">
+    <div class="product-img" style="background:#fff">
+      <img src="assets/user-product.jpg" alt="Heygo AI 可穿戴设备" style="object-fit:contain;padding:24px">
+    </div>
+    <div class="features-list">
+      <div class="feature-item">
+        <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 6v6l4 2"/></svg></div>
+        <div>
+          <h4>AI 实时动作分析</h4>
+          <p>内置 IMU 传感器 + AI 算法，实时识别转弯类型、刻滑角度、跳台动作，滑行结束即生成专业级分析报告。</p>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"/></svg></div>
+        <div>
+          <h4>全维度数据追踪</h4>
+          <p>记录速度、坡度、垂直落差、滑行距离、转弯频率等 20+ 项数据，每一趟滑行都能量化呈现。</p>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+        <div>
+          <h4>进步可视化对比</h4>
+          <p>AI 自动对比历史滑行数据，生成进步曲线和针对性改进建议，让训练效果看得见、说得清。</p>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+        <div>
+          <h4>社区与排行榜</h4>
+          <p>与好友、全球滑手同台比拼，支持赛道挑战、好友 PK 和区域排行榜，让数据社交化、内容化。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="features-showcase">
+    <h3>核心功能</h3>
+    <div class="features-grid">
+      <div class="feature-item">
+        <img src="assets/feature-4-drills.jpg" alt="Personalized Drills">
+        <div class="feature-name">Personalized Drills</div>
+      </div>
+      <div class="feature-item">
+        <img src="assets/feature-5-leaderboard.jpg" alt="Leaderboard">
+        <div class="feature-name">Leaderboard</div>
+      </div>
+      <div class="feature-item">
+        <img src="assets/feature-1-coaching.jpg" alt="Real-time Coaching">
+        <div class="feature-name">Real-time Coaching</div>
+      </div>
+      <div class="feature-item">
+        <img src="assets/feature-2-askheygo.jpg" alt="Ask Heygo">
+        <div class="feature-name">Ask Heygo</div>
+      </div>
+      <div class="feature-item">
+        <img src="assets/feature-3-rideview.jpg" alt="AI Ride Review">
+        <div class="feature-name">AI Ride Review</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Content Guide ===== -->
+<section class="section" id="content">
+  <div class="section-label">03 / Content Guide</div>
+  <h2>内容指南</h2>
+  <p class="section-desc">推荐内容方向、可直接使用的话术模板和发布规范。</p>
+
+  <div class="content-grid">
+    <div>
+      <h3 style="font-size:20px;font-weight:800;margin-bottom:24px">推荐内容方向</h3>
+      <div class="direction-cards">
+        <div class="dir-card">
+          <div class="dir-num">01</div>
+          <h4>首次开箱体验</h4>
+          <p>从拆箱、佩戴到首次滑行的完整体验，突出产品质感和上手便捷度。</p>
+        </div>
+        <div class="dir-card">
+          <div class="dir-num">02</div>
+          <h4>数据实测挑战</h4>
+          <p>用 Heygo 记录一天滑行数据，展示速度、落差、转弯分析的真实效果。</p>
+        </div>
+        <div class="dir-card">
+          <div class="dir-num">03</div>
+          <h4>进步对比故事</h4>
+          <p>使用前 vs 使用后 N 周的技术进步对比，用数据证明训练效果。</p>
+        </div>
+        <div class="dir-card">
+          <div class="dir-num">04</div>
+          <h4>教练/大神视角</h4>
+          <p>从专业角度评测 AI 分析的准确性，对比传统教学方式的差异。</p>
+        </div>
+        <div class="dir-card wide">
+          <div class="dir-num">05</div>
+          <h4>Vlog · 雪季必备单品</h4>
+          <p>以第一视角 vlog 记录完整滑雪日，从开箱穿戴到滑行数据复盘全程穿插 Heygo 实时反馈，打造"今年雪季必入科技单品"种草氛围，同时触达滑雪爱好者和科技数码受众。</p>
+        </div>
+      </div>
+    </div>
+    <div>
+      <h3 style="font-size:20px;font-weight:800;margin-bottom:24px">话术模板</h3>
+      <div class="script-block">
+        <div class="script-header">
+          <h4>短视频口播脚本（30s）</h4>
+          <button class="copy-btn" onclick="copyText(this,'script1')">
+            <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            复制
+          </button>
+        </div>
+        <div class="script-body" id="script1">滑雪这么久，你知道自己每一趟到底滑得怎么样吗？
+
+我最近在用 Heygo，一个戴在身上的 AI 滑雪教练。它能实时分析你的转弯、刻滑和速度，滑完直接出一份专业报告。
+
+最狠的是进步对比功能，用了两周，我的刻滑角度提升了 18%，数据不会骗人。
+
+想让每一趟都滑得明白？评论区领你的专属折扣。</div>
+      </div>
+      <div class="script-block">
+        <div class="script-header">
+          <h4>图文种草文案</h4>
+          <button class="copy-btn" onclick="copyText(this,'script2')">
+            <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            复制
+          </button>
+        </div>
+        <div class="script-body" id="script2">🏂 滑了三年雪，直到用了这个我才知道自己一直在"瞎滑"
+
+以前练活全靠感觉，觉得这趟滑得好但说不出好在哪。直到雪友给我安利了 Heygo——一个 AI 可穿戴滑雪分析设备。
+
+✨ 最打动我的三个点：
+1️⃣ 实时动作识别：转弯类型、刻滑角度一目了然
+2️⃣ 滑行结束即出报告：速度、落差、转弯频率 20+ 项数据
+3️⃣ 进步曲线：每周对比，训练效果看得见
+
+戴了一个月，我的平均刻滑角度从 32° 提到了 48°，教练都说我进步明显。
+
+雪季想突破瓶颈的朋友，用我的折扣码【HEYGOKOL】立减 15%，链接在评论区👇
+
+#滑雪 #单板滑雪 #滑雪装备 #Heygo #AI滑雪</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="rules-list">
+    <h3 style="font-size:20px;font-weight:800;margin-bottom:8px">发布规范</h3>
+    <div class="rule-item">
+      <svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+      <p><strong>合规标注：</strong>所有合作内容必须在显著位置标注 #ad 或 #sponsored，视频需在开头 3 秒内口播说明合作关系。</p>
+    </div>
+    <div class="rule-item">
+      <svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+      <p><strong>品牌提及：</strong>内容中需 @heygo.ai 官方账号，并在文案中使用专属折扣码和购买链接。</p>
+    </div>
+    <div class="rule-item">
+      <svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+      <p><strong>内容审核：</strong>发布前请将草稿发送对接人审核，审核通过后方可发布；发布后 24 小时内将链接回传。</p>
+    </div>
+    <div class="rule-item">
+      <svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+      <p><strong>素材使用：</strong>仅可使用本素材库中的官方素材，不得擅自修改 Logo 颜色或比例，不得使用竞品对比类负面表述。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Test Guide ===== -->
+<section class="section" id="test">
+  <div class="section-label">04 / Test Guide</div>
+  <h2>测试指南</h2>
+  <p class="section-desc">从开箱到出报告，五步快速上手 Heygo。</p>
+
+  <div class="timeline">
+    <div class="timeline-grid">
+      <div class="tl-time">Step 1</div>
+      <div class="tl-axis"><div class="tl-dot"></div><div class="tl-line"></div></div>
+      <div class="tl-content">
+        <h4>下载 Heygo APP</h4>
+        <p>iOS 用户通过 TestFlight 下载体验版：<a href="https://testflight.apple.com/join/GNUhfR7u" style="color:var(--accent);text-decoration:underline" target="_blank" rel="noopener">testflight.apple.com/join/GNUhfR7u</a>。支持 iOS 14+。</p>
+        <div class="tl-tip"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>首次打开需允许蓝牙和位置权限</div>
+      </div>
+    </div>
+    <div class="timeline-grid">
+      <div class="tl-time">Step 2</div>
+      <div class="tl-axis"><div class="tl-dot"></div><div class="tl-line"></div></div>
+      <div class="tl-content">
+        <h4>蓝牙匹配设备</h4>
+        <p>先将设备放入充电仓通电激活，取出后长按设备按钮 3 秒开机，指示灯闪烁即进入配对模式。打开 APP 点击「添加设备」，自动搜索并完成蓝牙连接，首次连接会自动升级固件。</p>
+        <div class="tl-tip"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>固件升级约需 3-5 分钟，保持 APP 在前台</div>
+      </div>
+    </div>
+    <div class="timeline-grid">
+      <div class="tl-time">Step 3</div>
+      <div class="tl-axis"><div class="tl-dot"></div><div class="tl-line"></div></div>
+      <div class="tl-content">
+        <h4>正确穿戴设备</h4>
+        <p>先安装固定夹子，按照设备上标注的 L / R 左右标识，分别卡在左右雪鞋外侧，确保夹子完全卡到底、不松动。穿戴到位后设备会自动识别左右脚。</p>
+        <div class="tl-tip"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>夹子未卡到底会导致数据偏差，穿戴后请检查牢固度</div>
+      </div>
+    </div>
+    <div class="timeline-grid">
+      <div class="tl-time">Step 4</div>
+      <div class="tl-axis"><div class="tl-dot"></div><div class="tl-line"></div></div>
+      <div class="tl-content">
+        <h4>开始滑行</h4>
+        <p>穿戴完成后点击 APP 中的「开始滑行」，设备会自动识别滑行状态并开始记录。滑行过程中无需操作手机，设备本地存储数据，断连也不丢失。</p>
+        <div class="tl-tip"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>坐缆车时设备会自动暂停记录，不会计入无效数据</div>
+        <div style="margin-top:16px;padding:18px;background:rgba(196,255,77,.06);border:1px solid rgba(196,255,77,.2);border-radius:12px">
+          <p style="font-size:14px;font-weight:700;color:var(--accent);margin-bottom:10px">Voice Coaching 语音教练体验指南</p>
+          <p style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:10px">为了让你专注滑行，Heygo 默认不过多语音干扰。想要体验语音教练反馈，请按以下步骤操作：</p>
+          <ul style="font-size:13px;color:var(--text2);line-height:1.9;padding-left:18px;margin:0">
+            <li>在 APP 中开启<strong style="color:#fff">【详细】模式</strong></li>
+            <li>滑行时主动模仿业余滑手的常见问题：<strong style="color:#fff">甩板尾、缺少上半弧、缺少提前换刃、立刃不稳定、板子突突突、换刃犹豫</strong></li>
+            <li>连续滑行<strong style="color:#fff">至少 8 个弯</strong>以上，低于 8 个弯不会触发语音</li>
+            <li>滑行停下来后（坐下、停下、脱板走路等），约 <strong style="color:#fff">20 秒</strong>左右会听到语音 Coach 反馈</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="timeline-grid">
+      <div class="tl-time">Step 5</div>
+      <div class="tl-axis"><div class="tl-dot"></div></div>
+      <div class="tl-content">
+        <h4>查看 AI 分析报告</h4>
+        <p>滑行结束后点击「结束」，APP 会在 10 秒内生成完整分析报告，包括滑行数据、动作识别、转弯分析、进步对比和 AI 改进建议。</p>
+        <div class="tl-tip"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>Pro 会员可解锁深度分析和无限云端存储</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="trouble-grid">
+    <div class="trouble-card">
+      <h5><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>固件升级提醒</h5>
+      <p>设备硬件上出现固件升级提示。</p>
+      <div class="solution">提醒：先不要升级，除非另行给到更新指南。</div>
+    </div>
+    <div class="trouble-card">
+      <h5><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>电池续航担忧</h5>
+      <p>担心低温环境下电池续航不足。</p>
+      <div class="solution">放心：Heygo 设备经过极端低温测试，电池可在零下 40 摄氏度环境下正常使用，常规雪场温度无需担忧续航。</div>
+    </div>
+    <div class="trouble-card">
+      <h5><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>语音提示异常</h5>
+      <p>没有听到语音提示，或反复提醒同一个问题。</p>
+      <div class="solution">说明：Heygo 会按问题的优先级和严重性排序，可能重复提醒较高优先级的问题，属正常现象。多滑几趟多试几次，即会触发其他问题的语音提示。</div>
+    </div>
+    <div class="trouble-card">
+      <h5><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>报告生成失败</h5>
+      <p>滑行结束后报告一直加载或生成失败。</p>
+      <div class="solution">解决：确保手机网络连接正常，APP 更新到最新版本。若数据量较大（超过 4 小时滑行），报告生成可能需要 30-60 秒，请耐心等待。</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Partnership ===== -->
+<section class="section" id="partner">
+  <div class="section-label">05 / Partnership</div>
+  <h2>合作政策</h2>
+  <p class="section-desc">透明的佣金机制和清晰的结算流程，让合作更安心。</p>
+
+  <div class="commission-cards">
+    <div class="comm-card featured">
+      <div class="comm-tier">基础合作</div>
+      <div class="comm-rate">10<span>%</span></div>
+      <div class="comm-desc">每笔成功订单 10% 佣金，你的粉丝同时享受 $10 专属折扣，转化更轻松。</div>
+      <ul class="comm-list">
+        <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>10% 订单佣金</li>
+        <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>粉丝专属 $10 折扣码</li>
+        <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>实时数据后台</li>
+        <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>营销素材支持</li>
+      </ul>
+    </div>
+    <div class="comm-card">
+      <div class="comm-tier">活动合作</div>
+      <div class="comm-rate">限时<span>高佣</span></div>
+      <div class="comm-desc">在促销季或主题活动期间，Heygo 释放更有利的合作条件，包括更高佣金比例和额外流量扶持。</div>
+      <ul class="comm-list">
+        <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>活动期间限时高佣</li>
+        <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>专属活动素材包</li>
+        <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>官方账号流量扶持</li>
+        <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>优先参与品牌活动</li>
+      </ul>
+    </div>
+    <div class="comm-card">
+      <div class="comm-tier">加码合作</div>
+      <div class="comm-rate">定制<span>方案</span></div>
+      <div class="comm-desc">月销单量较高或粉丝体量较大的 KOL，可与 Heygo 团队单独商讨深度合作方式，一事一议。</div>
+      <ul class="comm-list">
+        <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>一事一议定制佣金</li>
+        <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>联名款产品合作机会</li>
+        <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>线下活动 / 雪场资源</li>
+        <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>1对1 专属运营对接</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3 style="font-size:20px;font-weight:800;margin-bottom:32px">结算流程</h3>
+  <div class="flow-steps">
+    <div class="flow-step">
+      <div class="flow-num">1</div>
+      <h5>订单追踪</h5>
+      <p>通过专属折扣码或追踪链接自动归因，数据后台实时可见</p>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">2</div>
+      <h5>月度对账</h5>
+      <p>次月 1-5 日生成上月结算单，确认无退款订单后锁定金额</p>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">3</div>
+      <h5>发票/信息</h5>
+      <p>提交收款信息和发票（如需），支持 PayPal 和银行转账</p>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">4</div>
+      <h5>佣金打款</h5>
+      <p>次月 15 日前完成打款，到账时间视收款方式 1-3 个工作日</p>
+    </div>
+  </div>
+
+
+</section>
+
+<!-- ===== Asset Library ===== -->
+<section class="section" id="assets">
+  <div class="section-label">02 / Asset Library</div>
+  <h2>营销素材库</h2>
+  <p class="section-desc">官方品牌素材一键下载，使用前请遵守品牌规范。</p>
+
+  <div class="asset-filters">
+    <button class="filter-btn active" data-filter="all">全部</button>
+    <button class="filter-btn" data-filter="logobrand">Logo & 品牌规范</button>
+    <button class="filter-btn" data-filter="image">产品图</button>
+    <button class="filter-btn" data-filter="video">产品视频</button>
+  </div>
+
+  <div class="asset-grid" id="assetGrid">
+    <div class="asset-card" data-cat="logobrand">
+      <div class="asset-thumb" style="background:#111">
+        <svg width="120" height="48" viewBox="0 0 200 80"><text x="100" y="55" text-anchor="middle" font-size="42" font-weight="900" fill="#c4ff4d" font-family="Arial Black">Heygo</text></svg>
+        <span class="asset-type">SVG</span>
+      </div>
+      <div class="asset-body">
+        <h4>Heygo Logo · 荧光绿</h4>
+        <p>矢量 Logo，深色背景使用，支持无限缩放</p>
+        <div class="asset-meta">
+          <span class="asset-size">8 KB · SVG</span>
+          <button class="download-btn" onclick="showToast('素材下载已开始')">
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            下载
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="asset-card" data-cat="logobrand">
+      <div class="asset-thumb" style="background:#f5f5f5">
+        <svg width="120" height="48" viewBox="0 0 200 80"><text x="100" y="55" text-anchor="middle" font-size="42" font-weight="900" fill="#0a0a0a" font-family="Arial Black">Heygo</text></svg>
+        <span class="asset-type">SVG</span>
+      </div>
+      <div class="asset-body">
+        <h4>Heygo Logo · 黑色版</h4>
+        <p>矢量 Logo，浅色背景使用，支持无限缩放</p>
+        <div class="asset-meta">
+          <span class="asset-size">8 KB · SVG</span>
+          <button class="download-btn" onclick="showToast('素材下载已开始')">
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            下载
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="asset-card" data-cat="logobrand">
+      <div class="asset-thumb" style="background:linear-gradient(135deg,#2a2a2a,#1a1a1a)">
+        <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#c4ff4d" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        <span class="asset-type">PDF</span>
+      </div>
+      <div class="asset-body">
+        <h4>品牌视觉规范手册</h4>
+        <p>Logo 使用规范、色值、字体、排版指南，创作前必读</p>
+        <div class="asset-meta">
+          <span class="asset-size">5.2 MB · PDF</span>
+          <button class="download-btn" onclick="showToast('素材下载已开始')">
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            下载
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="asset-card" data-cat="logobrand">
+      <div class="asset-thumb" style="background:linear-gradient(135deg,#1c1c1c,#2d2d2d)">
+        <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#c4ff4d" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+        <span class="asset-type">ZIP</span>
+      </div>
+      <div class="asset-body">
+        <h4>品牌色值与字体包</h4>
+        <p>官方色板 HEX/RGB、字体文件、图标库合集</p>
+        <div class="asset-meta">
+          <span class="asset-size">12 MB · ZIP</span>
+          <button class="download-btn" onclick="showToast('素材下载已开始')">
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            下载
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="asset-card" data-cat="image">
+      <div class="asset-thumb">
+        <img src="assets/product-lifestyle.jpg" alt="产品场景图">
+        <span class="asset-type">JPG</span>
+      </div>
+      <div class="asset-body">
+        <h4>产品场景图 · 雪山滑行</h4>
+        <p>滑雪者佩戴 Heygo 滑行实拍，适合封面和主视觉</p>
+        <div class="asset-meta">
+          <span class="asset-size">2.4 MB · 1536×1152</span>
+          <button class="download-btn" onclick="showToast('素材下载已开始')">
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            下载
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="asset-card" data-cat="image">
+      <div class="asset-thumb">
+        <img src="assets/app-screen.jpg" alt="APP 界面">
+        <span class="asset-type">JPG</span>
+      </div>
+      <div class="asset-body">
+        <h4>APP 数据报告界面</h4>
+        <p>手机端滑行分析报告截图，展示数据可视化效果</p>
+        <div class="asset-meta">
+          <span class="asset-size">1.8 MB · 1152×1536</span>
+          <button class="download-btn" onclick="showToast('素材下载已开始')">
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            下载
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="asset-card" data-cat="image">
+      <div class="asset-thumb">
+        <img src="assets/hero-bg.jpg" alt="雪山场景">
+        <span class="asset-type">JPG</span>
+      </div>
+      <div class="asset-body">
+        <h4>雪山大场景背景图</h4>
+        <p>开阔雪山滑雪场景，适合视频封面和图文背景</p>
+        <div class="asset-meta">
+          <span class="asset-size">3.1 MB · 2048×1152</span>
+          <button class="download-btn" onclick="showToast('素材下载已开始')">
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            下载
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="asset-card" data-cat="video">
+      <div class="asset-thumb" style="background:linear-gradient(135deg,#1a1a2e,#16213e)">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#c4ff4d" stroke-width="1.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        <span class="asset-type">MP4</span>
+      </div>
+      <div class="asset-body">
+        <h4>产品宣传片 · 60s</h4>
+        <p>官方品牌宣传片，可直接用于视频内容素材</p>
+        <div class="asset-meta">
+          <span class="asset-size">48 MB · 1080p</span>
+          <button class="download-btn" onclick="showToast('素材下载已开始')">
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            下载
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="asset-card" data-cat="video">
+      <div class="asset-thumb" style="background:linear-gradient(135deg,#1a1a2e,#0f3460)">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#c4ff4d" stroke-width="1.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        <span class="asset-type">MP4</span>
+      </div>
+      <div class="asset-body">
+        <h4>APP 功能演示 · 30s</h4>
+        <p>手机 APP 操作流程录屏，展示数据报告生成过程</p>
+        <div class="asset-meta">
+          <span class="asset-size">22 MB · 1080p</span>
+          <button class="download-btn" onclick="showToast('素材下载已开始')">
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            下载
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FAQ ===== -->
+<section class="section" id="faq">
+  <div class="section-label">06 / FAQ</div>
+  <h2>常见问题</h2>
+  <p class="section-desc">关于产品使用和合作的高频问题，先看这里。</p>
+
+  <div class="faq-list">
+    <div class="faq-item">
+      <button class="faq-q">Heygo 适合什么水平的滑雪者使用？
+        <span class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+      </button>
+      <div class="faq-a"><p>Heygo 适合所有水平的滑雪者。初中级滑手可以通过数据反馈快速纠正动作、建立正确的肌肉记忆；中高级滑手可以精细优化刻滑角度和线路效率；教练和培训师可以用数据辅助教学，让学员直观看到进步。自由式玩家还可以记录跳台和道具动作的空中数据。</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q">设备防水吗？低温环境能正常工作吗？
+        <span class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+      </button>
+      <div class="faq-a"><p>Heygo 达到 IP67 防水等级，可以承受雪场的雨雪和飞溅水花。设备经过 -20°C 低温测试，在常规雪场温度下均可正常工作。极寒环境（-20°C 以下）建议将设备放在内层衣物附近保暖，续航会有所下降但功能不受影响。</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q">合作佣金怎么计算？退款订单会扣佣金吗？
+        <span class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+      </button>
+      <div class="faq-a"><p>佣金按实际支付金额（扣除运费和税费后）乘以对应佣金比例计算。发生退款的订单会在结算时扣除对应佣金，以最终确认收货且无退款的订单为准。你可以在创作者后台实时查看每笔订单的状态和预估佣金。</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q">内容发布前需要审核吗？审核要多久？
+        <span class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+      </button>
+      <div class="faq-a"><p>是的，所有合作内容发布前需将草稿发送对接人审核。常规图文内容审核时间为 24 小时内，视频内容为 48 小时内。审核主要关注产品信息准确性、合规标注和品牌规范，不会干预你的创作风格和个人观点。紧急发布可提前沟通加急处理。</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q">可以同时和其他滑雪品牌合作吗？
+        <span class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+      </button>
+      <div class="faq-a"><p>基础合作不限制你与其他非直接竞争品牌的合作。但在 Heygo 合作内容发布前后 7 天内，不建议发布直接竞品（滑雪数据追踪/AI 分析类产品）的推广内容。头部合作可能包含独家条款，具体以合作协议为准。</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q">设备坏了怎么办？有保修期吗？
+        <span class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+      </button>
+      <div class="faq-a"><p>Heygo 提供 12 个月官方质保，非人为损坏可免费维修或更换。合作创作者额外享受 24 个月延保和优先换新服务。如遇设备故障，请联系对接人或通过 APP 内"帮助与反馈"提交售后申请，通常 3 个工作日内处理完成。</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q">数据隐私怎么保障？滑行数据会被公开吗？
+        <span class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+      </button>
+      <div class="faq-a"><p>你的滑行数据默认仅自己可见，不会被公开或分享给第三方。排行榜和社区功能需要你主动加入才会展示匿名化的数据。我们遵守 GDPR 和个人信息保护法，数据加密传输和存储，你可以随时在 APP 中导出或删除自己的全部数据。</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q">如何提升佣金等级？有什么快速进阶的方法？
+        <span class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+      </button>
+      <div class="faq-a"><p>佣金等级主要按月度有效订单数自动升级：月销 50 单升级到 15%，月销 200 单可申请 20%+ 头部合作。快速进阶建议：① 发布深度评测内容而非简单种草；② 在雪季高峰期集中发布；③ 利用折扣码在粉丝群和私域转化；④ 参与官方发起的话题挑战活动获得流量扶持。对接人可以为你制定个性化的增长方案。</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Footer ===== -->
+<footer class="footer">
+  <div class="footer-top">
+    <div class="footer-logo"><img src="assets/heygo-logo-large.png" alt="Heygo"></div>
+    <div class="footer-links">
+      <a href="#product">产品速览</a>
+      <a href="#assets">素材库</a>
+      <a href="#content">内容指南</a>
+      <a href="#test">测试指南</a>
+      <a href="#partner">合作政策</a>
+      <a href="#faq">FAQ</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Heygo. All rights reserved.</span>
+    <span>KOL Partner Hub · 创作者合作中心</span>
+  </div>
+</footer>
+
+<!-- Toast -->
+<div class="toast" id="toast">已复制到剪贴板</div>
+
+<!-- ===== Lightbox ===== -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" onclick="closeLightbox()" aria-label="关闭">&times;</button>
+  <button class="lightbox-prev" onclick="changeLightbox(-1)" aria-label="上一张">&#10094;</button>
+  <img class="lightbox-img" id="lightboxImg" src="" alt="">
+  <button class="lightbox-next" onclick="changeLightbox(1)" aria-label="下一张">&#10095;</button>
+  <div class="lightbox-caption" id="lightboxCaption"></div>
+  <div class="lightbox-counter" id="lightboxCounter"></div>
+</div>
+
+<script>
+// ===== Nav scroll effect =====
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 50);
+});
+
+// ===== Mobile nav toggle =====
+const navToggle = document.getElementById('navToggle');
+const navLinks = document.getElementById('navLinks');
+navToggle.addEventListener('click', () => {
+  navLinks.classList.toggle('open');
+});
+navLinks.querySelectorAll('a').forEach(a => {
+  a.addEventListener('click', () => navLinks.classList.remove('open'));
+});
+
+// ===== Toast =====
+const toast = document.getElementById('toast');
+let toastTimer;
+function showToast(msg) {
+  toast.textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+// ===== Copy text =====
+function copyText(btn, id) {
+  const el = document.getElementById(id);
+  const text = el ? el.textContent : '';
+  if (text) {
+    navigator.clipboard.writeText(text).then(() => {
+      showToast('已复制到剪贴板');
+    }).catch(() => {
+      // fallback
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      showToast('已复制到剪贴板');
+    });
+  }
+}
+
+// ===== Asset filter =====
+const filterBtns = document.querySelectorAll('.filter-btn');
+const assetCards = document.querySelectorAll('.asset-card');
+filterBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    filterBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const filter = btn.dataset.filter;
+    assetCards.forEach(card => {
+      if (filter === 'all' || card.dataset.cat === filter) {
+        card.style.display = '';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  });
+});
+
+// ===== FAQ accordion =====
+document.querySelectorAll('.faq-q').forEach(q => {
+  q.addEventListener('click', () => {
+    const item = q.parentElement;
+    const wasOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!wasOpen) item.classList.add('open');
+  });
+});
+
+// ===== Form submit (demo) =====
+function submitForm() {
+  const name = document.getElementById('cfName').value.trim();
+  const email = document.getElementById('cfEmail').value.trim();
+  const msg = document.getElementById('cfMsg').value.trim();
+  if (!name || !email || !msg) {
+    showToast('请填写完整信息');
+    return;
+  }
+  showToast('留言已发送，我们会尽快回复');
+  document.getElementById('cfName').value = '';
+  document.getElementById('cfEmail').value = '';
+  document.getElementById('cfMsg').value = '';
+}
+
+// ===== Smooth scroll for anchor links =====
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function(e) {
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      e.preventDefault();
+      const offset = 80;
+      const top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+      window.scrollTo({ top, behavior: 'smooth' });
+    }
+  });
+});
+
+// ===== Lightbox =====
+const lightboxImages = [
+  'assets/feature-4-drills.jpg',
+  'assets/feature-5-leaderboard.jpg',
+  'assets/feature-1-coaching.jpg',
+  'assets/feature-2-askheygo.jpg',
+  'assets/feature-3-rideview.jpg'
+];
+const lightboxAlts = [
+  'Personalized Drills',
+  'Leaderboard',
+  'Real-time Coaching',
+  'Ask Heygo',
+  'AI Ride Review'
+];
+let currentLightboxIndex = 0;
+
+function openLightbox(index){
+  currentLightboxIndex = index;
+  updateLightbox();
+  document.getElementById('lightbox').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeLightbox(){
+  document.getElementById('lightbox').classList.remove('active');
+  document.body.style.overflow = '';
+}
+function changeLightbox(dir){
+  currentLightboxIndex = (currentLightboxIndex + dir + lightboxImages.length) % lightboxImages.length;
+  updateLightbox();
+}
+function updateLightbox(){
+  document.getElementById('lightboxImg').src = lightboxImages[currentLightboxIndex];
+  document.getElementById('lightboxImg').alt = lightboxAlts[currentLightboxIndex];
+  document.getElementById('lightboxCaption').textContent = lightboxAlts[currentLightboxIndex];
+  document.getElementById('lightboxCounter').textContent = (currentLightboxIndex + 1) + ' / ' + lightboxImages.length;
+}
+
+document.querySelectorAll('.features-grid .feature-item').forEach((item, index) => {
+  item.addEventListener('click', () => openLightbox(index));
+});
+
+document.getElementById('lightbox').addEventListener('click', (e) => {
+  if (e.target.id === 'lightbox') closeLightbox();
+});
+
+document.addEventListener('keydown', (e) => {
+  if (!document.getElementById('lightbox').classList.contains('active')) return;
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'ArrowLeft') changeLightbox(-1);
+  if (e.key === 'ArrowRight') changeLightbox(1);
+});
+</script>
+</body>
+</html>
