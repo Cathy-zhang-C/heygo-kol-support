@@ -1602,6 +1602,17 @@ function switchLang(lang) {
       : 'This season,<br>Heygo rides <em>with you</em>';
   }
 
+  // Update script templates (multi-line content, needs special handling)
+  const script1 = document.getElementById('script1');
+  const script2 = document.getElementById('script2');
+  if (lang === 'en') {
+    if (script1) script1.textContent = 'Been skiing for years but have no idea how you actually ride?\n\nI\'ve been using Heygo lately — an AI ski coach that clips onto your boot. It analyzes your turns, edge angles, and speed in real time, then gives you a pro-level report right after each run.\n\nThe best part? The progress comparison feature. After two weeks, my edge angle improved 18%. Data doesn\'t lie.\n\nWant to know exactly how every run feels? Grab your exclusive discount in the comments.';
+    if (script2) script2.textContent = '🏂 Skied for 3 years, and until I used this I realized I\'d been "skiing blind"\n\nI used to rely purely on feel — knew a run was good but couldn\'t tell you why. Then a buddy recommended Heygo, an AI wearable ski analysis device.\n\n✨ Three things that blew me away:\n1️⃣ Real-time motion recognition: turn types and edge angles, instantly visible\n2️⃣ Instant reports after every run: speed, vertical drop, turn frequency — 20+ metrics\n3️⃣ Progress curves: weekly comparisons, training results you can actually see\n\nAfter a month, my average edge angle went from 32° to 48°. Even my coach noticed the improvement.\n\nIf you want to break through this season, use my code 【HEYGOKOL】 for 15% off. Link in comments 👇\n\n#Skiing #Snowboarding #SkiGear #Heygo #AISki';
+  } else {
+    if (script1) script1.textContent = '滑雪这么久，你知道自己每一趟到底滑得怎么样吗？\n\n我最近在用 Heygo，一个戴在身上的 AI 滑雪教练。它能实时分析你的转弯、刻滑和速度，滑完直接出一份专业报告。\n\n最狠的是进步对比功能，用了两周，我的刻滑角度提升了 18%，数据不会骗人。\n\n想让每一趟都滑得明白？评论区领你的专属折扣。';
+    if (script2) script2.textContent = '🏂 滑了三年雪，直到用了这个我才知道自己一直在"瞎滑"\n\n以前练活全靠感觉，觉得这趟滑得好但说不出好在哪。直到雪友给我安利了 Heygo——一个 AI 可穿戴滑雪分析设备。\n\n✨ 最打动我的三个点：\n1️⃣ 实时动作识别：转弯类型、刻滑角度一目了然\n2️⃣ 滑行结束即出报告：速度、落差、转弯频率 20+ 项数据\n3️⃣ 进步曲线：每周对比，训练效果看得见\n\n戴了一个月，我的平均刻滑角度从 32° 提到了 48°，教练都说我进步明显。\n\n雪季想突破瓶颈的朋友，用我的折扣码【HEYGOKOL】立减 15%，链接在评论区👇\n\n#滑雪 #单板滑雪 #滑雪装备 #Heygo #AI滑雪';
+  }
+
   // Update toast text
   const toast = document.getElementById('toast');
   if (toast) toast.textContent = dict['已复制到剪贴板'];
