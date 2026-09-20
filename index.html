@@ -62,6 +62,18 @@ img{max-width:100%;display:block}
 .nav-toggle{display:none;flex-direction:column;gap:4px;padding:8px}
 .nav-toggle span{width:20px;height:2px;background:#fff;transition:all .3s}
 
+/* Language Switch */
+.lang-switch{
+  display:flex;align-items:center;gap:2px;
+  background:rgba(255,255,255,.06);border-radius:999px;
+  padding:3px;margin-left:8px;
+}
+.lang-btn{
+  padding:5px 12px;border-radius:999px;font-size:12px;font-weight:700;
+  color:var(--text2);transition:all .2s;cursor:pointer;
+}
+.lang-btn.active{background:var(--accent);color:#0a0a0a}
+
 /* ===== Hero ===== */
 .hero{
   position:relative;min-height:100vh;display:flex;flex-direction:column;
@@ -363,7 +375,8 @@ img{max-width:100%;display:block}
 }
 .comm-card.featured{border-color:var(--accent);background:linear-gradient(180deg,rgba(196,255,77,.06),var(--card))}
 .comm-card.featured::before{
-  content:'推荐';position:absolute;top:16px;right:16px;
+  content: var(--featured-label, '推荐');
+  position:absolute;top:16px;right:16px;
   background:var(--accent);color:#0a0a0a;font-size:11px;font-weight:800;
   padding:3px 10px;border-radius:999px;
 }
@@ -515,6 +528,10 @@ img{max-width:100%;display:block}
 @media(max-width:768px){
   .nav-links{display:none}
   .nav-toggle{display:flex}
+  .lang-switch{margin-left:4px}
+  .lang-btn{padding:4px 10px;font-size:11px}
+  .nav{padding:8px 16px}
+  .nav-logo img{height:32px}
   .nav-links.open{
     display:flex;flex-direction:column;position:absolute;top:64px;left:0;right:0;
     background:rgba(16,16,16,.97);backdrop-filter:blur(20px);
@@ -548,6 +565,10 @@ img{max-width:100%;display:block}
     <a href="#partner">合作政策</a>
     <a href="#assets">素材库</a>
     <a href="#faq">FAQ</a>
+  </div>
+  <div class="lang-switch">
+    <button class="lang-btn active" data-lang="zh" onclick="switchLang('zh')">中</button>
+    <button class="lang-btn" data-lang="en" onclick="switchLang('en')">EN</button>
   </div>
   <button class="nav-toggle" id="navToggle" aria-label="menu">
     <span></span><span></span><span></span>
@@ -1175,6 +1196,425 @@ img{max-width:100%;display:block}
 </div>
 
 <script>
+// ===== i18n Translation =====
+const translations = {
+  zh: {
+    '产品速览': '产品速览',
+    '内容指南': '内容指南',
+    '测试指南': '测试指南',
+    '合作政策': '合作政策',
+    '素材库': '素材库',
+    'KOL Partner Hub · 创作者合作中心': 'KOL Partner Hub · 创作者合作中心',
+    '这个雪季': '这个雪季',
+    'Heygo 跟你': 'Heygo 跟你',
+    '一起滑行': '一起滑行',
+    'Heygo 创作者合作中心为你提供产品资料、营销素材、内容指南和全流程支持，帮助你创作出真正打动滑雪爱好者的内容。': 'Heygo 创作者合作中心为你提供产品资料、营销素材、内容指南和全流程支持，帮助你创作出真正打动滑雪爱好者的内容。',
+    '核心卖点与参数': '核心卖点与参数',
+    '方向 话术 规范': '方向 话术 规范',
+    '上手全流程': '上手全流程',
+    '佣金与结算': '佣金与结算',
+    '了解 Heygo 的核心价值，让你的内容更有说服力。': '了解 Heygo 的核心价值，让你的内容更有说服力。',
+    'AI 实时动作分析': 'AI 实时动作分析',
+    '内置 IMU 传感器 + AI 算法，实时识别转弯类型、刻滑角度、跳台动作，滑行结束即生成专业级分析报告。': '内置 IMU 传感器 + AI 算法，实时识别转弯类型、刻滑角度、跳台动作，滑行结束即生成专业级分析报告。',
+    '全维度数据追踪': '全维度数据追踪',
+    '记录速度、坡度、垂直落差、滑行距离、转弯频率等 20+ 项数据，每一趟滑行都能量化呈现。': '记录速度、坡度、垂直落差、滑行距离、转弯频率等 20+ 项数据，每一趟滑行都能量化呈现。',
+    '进步可视化对比': '进步可视化对比',
+    'AI 自动对比历史滑行数据，生成进步曲线和针对性改进建议，让训练效果看得见、说得清。': 'AI 自动对比历史滑行数据，生成进步曲线和针对性改进建议，让训练效果看得见、说得清。',
+    '社区与排行榜': '社区与排行榜',
+    '与好友、全球滑手同台比拼，支持赛道挑战、好友 PK 和区域排行榜，让数据社交化、内容化。': '与好友、全球滑手同台比拼，支持赛道挑战、好友 PK 和区域排行榜，让数据社交化、内容化。',
+    '核心功能': '核心功能',
+    '推荐内容方向': '推荐内容方向',
+    '首次开箱体验': '首次开箱体验',
+    '从拆箱、佩戴到首次滑行的完整体验，突出产品质感和上手便捷度。': '从拆箱、佩戴到首次滑行的完整体验，突出产品质感和上手便捷度。',
+    '数据实测挑战': '数据实测挑战',
+    '用 Heygo 记录一天滑行数据，展示速度、落差、转弯分析的真实效果。': '用 Heygo 记录一天滑行数据，展示速度、落差、转弯分析的真实效果。',
+    '进步对比故事': '进步对比故事',
+    '使用前 vs 使用后 N 周的技术进步对比，用数据证明训练效果。': '使用前 vs 使用后 N 周的技术进步对比，用数据证明训练效果。',
+    '教练/大神视角': '教练/大神视角',
+    '从专业角度评测 AI 分析的准确性，对比传统教学方式的差异。': '从专业角度评测 AI 分析的准确性，对比传统教学方式的差异。',
+    'Vlog · 雪季必备单品': 'Vlog · 雪季必备单品',
+    '以第一视角 vlog 记录完整滑雪日，从开箱穿戴到滑行数据复盘全程穿插 Heygo 实时反馈，打造"今年雪季必入科技单品"种草氛围，同时触达滑雪爱好者和科技数码受众。': '以第一视角 vlog 记录完整滑雪日，从开箱穿戴到滑行数据复盘全程穿插 Heygo 实时反馈，打造"今年雪季必入科技单品"种草氛围，同时触达滑雪爱好者和科技数码受众。',
+    '话术模板': '话术模板',
+    '短视频口播脚本（30s）': '短视频口播脚本（30s）',
+    '复制': '复制',
+    '图文种草文案': '图文种草文案',
+    '发布规范': '发布规范',
+    '合规标注：': '合规标注：',
+    '所有合作内容必须在显著位置标注 #ad 或 #sponsored，视频需在开头 3 秒内口播说明合作关系。': '所有合作内容必须在显著位置标注 #ad 或 #sponsored，视频需在开头 3 秒内口播说明合作关系。',
+    '品牌提及：': '品牌提及：',
+    '内容中需 @heygo.ai 官方账号，并在文案中使用专属折扣码和购买链接。': '内容中需 @heygo.ai 官方账号，并在文案中使用专属折扣码和购买链接。',
+    '内容审核：': '内容审核：',
+    '发布前请将草稿发送对接人审核，审核通过后方可发布；发布后 24 小时内将链接回传。': '发布前请将草稿发送对接人审核，审核通过后方可发布；发布后 24 小时内将链接回传。',
+    '素材使用：': '素材使用：',
+    '仅可使用本素材库中的官方素材，不得擅自修改 Logo 颜色或比例，不得使用竞品对比类负面表述。': '仅可使用本素材库中的官方素材，不得擅自修改 Logo 颜色或比例，不得使用竞品对比类负面表述。',
+    '从开箱到出报告，五步快速上手 Heygo。': '从开箱到出报告，五步快速上手 Heygo。',
+    '下载 Heygo APP': '下载 Heygo APP',
+    'iOS 用户通过 TestFlight 下载体验版：': 'iOS 用户通过 TestFlight 下载体验版：',
+    '支持 iOS 14+。': '支持 iOS 14+。',
+    '首次打开需允许蓝牙和位置权限': '首次打开需允许蓝牙和位置权限',
+    '蓝牙匹配设备': '蓝牙匹配设备',
+    '先将设备放入充电仓通电激活，取出后长按设备按钮 3 秒开机，指示灯闪烁即进入配对模式。打开 APP 点击「添加设备」，自动搜索并完成蓝牙连接，首次连接会自动升级固件。': '先将设备放入充电仓通电激活，取出后长按设备按钮 3 秒开机，指示灯闪烁即进入配对模式。打开 APP 点击「添加设备」，自动搜索并完成蓝牙连接，首次连接会自动升级固件。',
+    '固件升级约需 3-5 分钟，保持 APP 在前台': '固件升级约需 3-5 分钟，保持 APP 在前台',
+    '正确穿戴设备': '正确穿戴设备',
+    '先安装固定夹子，按照设备上标注的 L / R 左右标识，分别卡在左右雪鞋外侧，确保夹子完全卡到底、不松动。穿戴到位后设备会自动识别左右脚。': '先安装固定夹子，按照设备上标注的 L / R 左右标识，分别卡在左右雪鞋外侧，确保夹子完全卡到底、不松动。穿戴到位后设备会自动识别左右脚。',
+    '夹子未卡到底会导致数据偏差，穿戴后请检查牢固度': '夹子未卡到底会导致数据偏差，穿戴后请检查牢固度',
+    '开始滑行': '开始滑行',
+    '穿戴完成后点击 APP 中的「开始滑行」，设备会自动识别滑行状态并开始记录。滑行过程中无需操作手机，设备本地存储数据，断连也不丢失。': '穿戴完成后点击 APP 中的「开始滑行」，设备会自动识别滑行状态并开始记录。滑行过程中无需操作手机，设备本地存储数据，断连也不丢失。',
+    '坐缆车时设备会自动暂停记录，不会计入无效数据': '坐缆车时设备会自动暂停记录，不会计入无效数据',
+    'Voice Coaching 语音教练体验指南': 'Voice Coaching 语音教练体验指南',
+    '为了让你专注滑行，Heygo 默认不过多语音干扰。想要体验语音教练反馈，请按以下步骤操作：': '为了让你专注滑行，Heygo 默认不过多语音干扰。想要体验语音教练反馈，请按以下步骤操作：',
+    '在 APP 中开启': '在 APP 中开启',
+    '【详细】模式': '【详细】模式',
+    '滑行时主动模仿业余滑手的常见问题：': '滑行时主动模仿业余滑手的常见问题：',
+    '甩板尾、缺少上半弧、缺少提前换刃、立刃不稳定、板子突突突、换刃犹豫': '甩板尾、缺少上半弧、缺少提前换刃、立刃不稳定、板子突突突、换刃犹豫',
+    '连续滑行': '连续滑行',
+    '至少 8 个弯': '至少 8 个弯',
+    '以上，低于 8 个弯不会触发语音': '以上，低于 8 个弯不会触发语音',
+    '滑行停下来后（坐下、停下、脱板走路等），约': '滑行停下来后（坐下、停下、脱板走路等），约',
+    '20 秒': '20 秒',
+    '左右会听到语音 Coach 反馈': '左右会听到语音 Coach 反馈',
+    '查看 AI 分析报告': '查看 AI 分析报告',
+    '滑行结束后点击「结束」，APP 会在 10 秒内生成完整分析报告，包括滑行数据、动作识别、转弯分析、进步对比和 AI 改进建议。': '滑行结束后点击「结束」，APP 会在 10 秒内生成完整分析报告，包括滑行数据、动作识别、转弯分析、进步对比和 AI 改进建议。',
+    'Pro 会员可解锁深度分析和无限云端存储': 'Pro 会员可解锁深度分析和无限云端存储',
+    '固件升级提醒': '固件升级提醒',
+    '设备硬件上出现固件升级提示。': '设备硬件上出现固件升级提示。',
+    '提醒：先不要升级，除非另行给到更新指南。': '提醒：先不要升级，除非另行给到更新指南。',
+    '电池续航担忧': '电池续航担忧',
+    '担心低温环境下电池续航不足。': '担心低温环境下电池续航不足。',
+    '放心：Heygo 设备经过极端低温测试，电池可在零下 40 摄氏度环境下正常使用，常规雪场温度无需担忧续航。': '放心：Heygo 设备经过极端低温测试，电池可在零下 40 摄氏度环境下正常使用，常规雪场温度无需担忧续航。',
+    '语音提示异常': '语音提示异常',
+    '没有听到语音提示，或反复提醒同一个问题。': '没有听到语音提示，或反复提醒同一个问题。',
+    '说明：Heygo 会按问题的优先级和严重性排序，可能重复提醒较高优先级的问题，属正常现象。多滑几趟多试几次，即会触发其他问题的语音提示。': '说明：Heygo 会按问题的优先级和严重性排序，可能重复提醒较高优先级的问题，属正常现象。多滑几趟多试几次，即会触发其他问题的语音提示。',
+    '报告生成失败': '报告生成失败',
+    '滑行结束后报告一直加载或生成失败。': '滑行结束后报告一直加载或生成失败。',
+    '解决：确保手机网络连接正常，APP 更新到最新版本。若数据量较大（超过 4 小时滑行），报告生成可能需要 30-60 秒，请耐心等待。': '解决：确保手机网络连接正常，APP 更新到最新版本。若数据量较大（超过 4 小时滑行），报告生成可能需要 30-60 秒，请耐心等待。',
+    '透明的佣金机制和清晰的结算流程，让合作更安心。': '透明的佣金机制和清晰的结算流程，让合作更安心。',
+    '基础合作': '基础合作',
+    '每笔成功订单 10% 佣金，你的粉丝同时享受 $10 专属折扣，转化更轻松。': '每笔成功订单 10% 佣金，你的粉丝同时享受 $10 专属折扣，转化更轻松。',
+    '10% 订单佣金': '10% 订单佣金',
+    '粉丝专属 $10 折扣码': '粉丝专属 $10 折扣码',
+    '实时数据后台': '实时数据后台',
+    '营销素材支持': '营销素材支持',
+    '活动合作': '活动合作',
+    '限时': '限时',
+    '高佣': '高佣',
+    '在促销季或主题活动期间，Heygo 释放更有利的合作条件，包括更高佣金比例和额外流量扶持。': '在促销季或主题活动期间，Heygo 释放更有利的合作条件，包括更高佣金比例和额外流量扶持。',
+    '活动期间限时高佣': '活动期间限时高佣',
+    '专属活动素材包': '专属活动素材包',
+    '官方账号流量扶持': '官方账号流量扶持',
+    '优先参与品牌活动': '优先参与品牌活动',
+    '加码合作': '加码合作',
+    '定制': '定制',
+    '方案': '方案',
+    '月销单量较高或粉丝体量较大的 KOL，可与 Heygo 团队单独商讨深度合作方式，一事一议。': '月销单量较高或粉丝体量较大的 KOL，可与 Heygo 团队单独商讨深度合作方式，一事一议。',
+    '一事一议定制佣金': '一事一议定制佣金',
+    '联名款产品合作机会': '联名款产品合作机会',
+    '线下活动 / 雪场资源': '线下活动 / 雪场资源',
+    '1对1 专属运营对接': '1对1 专属运营对接',
+    '结算流程': '结算流程',
+    '订单追踪': '订单追踪',
+    '通过专属折扣码或追踪链接自动归因，数据后台实时可见': '通过专属折扣码或追踪链接自动归因，数据后台实时可见',
+    '月度对账': '月度对账',
+    '次月 1-5 日生成上月结算单，确认无退款订单后锁定金额': '次月 1-5 日生成上月结算单，确认无退款订单后锁定金额',
+    '发票/信息': '发票/信息',
+    '提交收款信息和发票（如需），支持 PayPal 和银行转账': '提交收款信息和发票（如需），支持 PayPal 和银行转账',
+    '佣金打款': '佣金打款',
+    '次月 15 日前完成打款，到账时间视收款方式 1-3 个工作日': '次月 15 日前完成打款，到账时间视收款方式 1-3 个工作日',
+    '营销素材库': '营销素材库',
+    '官方品牌素材一键下载，使用前请遵守品牌规范。': '官方品牌素材一键下载，使用前请遵守品牌规范。',
+    '全部': '全部',
+    'Logo & 品牌规范': 'Logo & 品牌规范',
+    '产品图': '产品图',
+    '产品视频': '产品视频',
+    'Heygo Logo · 荧光绿': 'Heygo Logo · 荧光绿',
+    '矢量 Logo，深色背景使用，支持无限缩放': '矢量 Logo，深色背景使用，支持无限缩放',
+    '下载': '下载',
+    'Heygo Logo · 黑色版': 'Heygo Logo · 黑色版',
+    '矢量 Logo，浅色背景使用，支持无限缩放': '矢量 Logo，浅色背景使用，支持无限缩放',
+    '品牌视觉规范手册': '品牌视觉规范手册',
+    'Logo 使用规范、色值、字体、排版指南，创作前必读': 'Logo 使用规范、色值、字体、排版指南，创作前必读',
+    '品牌色值与字体包': '品牌色值与字体包',
+    '官方色板 HEX/RGB、字体文件、图标库合集': '官方色板 HEX/RGB、字体文件、图标库合集',
+    '产品场景图 · 雪山滑行': '产品场景图 · 雪山滑行',
+    '滑雪者佩戴 Heygo 滑行实拍，适合封面和主视觉': '滑雪者佩戴 Heygo 滑行实拍，适合封面和主视觉',
+    'APP 数据报告界面': 'APP 数据报告界面',
+    '手机端滑行分析报告截图，展示数据可视化效果': '手机端滑行分析报告截图，展示数据可视化效果',
+    '雪山大场景背景图': '雪山大场景背景图',
+    '开阔雪山滑雪场景，适合视频封面和图文背景': '开阔雪山滑雪场景，适合视频封面和图文背景',
+    '产品宣传片 · 60s': '产品宣传片 · 60s',
+    '官方品牌宣传片，可直接用于视频内容素材': '官方品牌宣传片，可直接用于视频内容素材',
+    'APP 功能演示 · 30s': 'APP 功能演示 · 30s',
+    '手机 APP 操作流程录屏，展示数据报告生成过程': '手机 APP 操作流程录屏，展示数据报告生成过程',
+    '常见问题': '常见问题',
+    '关于产品使用和合作的高频问题，先看这里。': '关于产品使用和合作的高频问题，先看这里。',
+    'Heygo 适合什么水平的滑雪者使用？': 'Heygo 适合什么水平的滑雪者使用？',
+    'Heygo 适合所有水平的滑雪者。初中级滑手可以通过数据反馈快速纠正动作、建立正确的肌肉记忆；中高级滑手可以精细优化刻滑角度和线路效率；教练和培训师可以用数据辅助教学，让学员直观看到进步。自由式玩家还可以记录跳台和道具动作的空中数据。': 'Heygo 适合所有水平的滑雪者。初中级滑手可以通过数据反馈快速纠正动作、建立正确的肌肉记忆；中高级滑手可以精细优化刻滑角度和线路效率；教练和培训师可以用数据辅助教学，让学员直观看到进步。自由式玩家还可以记录跳台和道具动作的空中数据。',
+    '设备防水吗？低温环境能正常工作吗？': '设备防水吗？低温环境能正常工作吗？',
+    'Heygo 达到 IP67 防水等级，可以承受雪场的雨雪和飞溅水花。设备经过 -20°C 低温测试，在常规雪场温度下均可正常工作。极寒环境（-20°C 以下）建议将设备放在内层衣物附近保暖，续航会有所下降但功能不受影响。': 'Heygo 达到 IP67 防水等级，可以承受雪场的雨雪和飞溅水花。设备经过 -20°C 低温测试，在常规雪场温度下均可正常工作。极寒环境（-20°C 以下）建议将设备放在内层衣物附近保暖，续航会有所下降但功能不受影响。',
+    '合作佣金怎么计算？退款订单会扣佣金吗？': '合作佣金怎么计算？退款订单会扣佣金吗？',
+    '佣金按实际支付金额（扣除运费和税费后）乘以对应佣金比例计算。发生退款的订单会在结算时扣除对应佣金，以最终确认收货且无退款的订单为准。你可以在创作者后台实时查看每笔订单的状态和预估佣金。': '佣金按实际支付金额（扣除运费和税费后）乘以对应佣金比例计算。发生退款的订单会在结算时扣除对应佣金，以最终确认收货且无退款的订单为准。你可以在创作者后台实时查看每笔订单的状态和预估佣金。',
+    '内容发布前需要审核吗？审核要多久？': '内容发布前需要审核吗？审核要多久？',
+    '是的，所有合作内容发布前需将草稿发送对接人审核。常规图文内容审核时间为 24 小时内，视频内容为 48 小时内。审核主要关注产品信息准确性、合规标注和品牌规范，不会干预你的创作风格和个人观点。紧急发布可提前沟通加急处理。': '是的，所有合作内容发布前需将草稿发送对接人审核。常规图文内容审核时间为 24 小时内，视频内容为 48 小时内。审核主要关注产品信息准确性、合规标注和品牌规范，不会干预你的创作风格和个人观点。紧急发布可提前沟通加急处理。',
+    '可以同时和其他滑雪品牌合作吗？': '可以同时和其他滑雪品牌合作吗？',
+    '基础合作不限制你与其他非直接竞争品牌的合作。但在 Heygo 合作内容发布前后 7 天内，不建议发布直接竞品（滑雪数据追踪/AI 分析类产品）的推广内容。头部合作可能包含独家条款，具体以合作协议为准。': '基础合作不限制你与其他非直接竞争品牌的合作。但在 Heygo 合作内容发布前后 7 天内，不建议发布直接竞品（滑雪数据追踪/AI 分析类产品）的推广内容。头部合作可能包含独家条款，具体以合作协议为准。',
+    '设备坏了怎么办？有保修期吗？': '设备坏了怎么办？有保修期吗？',
+    'Heygo 提供 12 个月官方质保，非人为损坏可免费维修或更换。合作创作者额外享受 24 个月延保和优先换新服务。如遇设备故障，请联系对接人或通过 APP 内"帮助与反馈"提交售后申请，通常 3 个工作日内处理完成。': 'Heygo 提供 12 个月官方质保，非人为损坏可免费维修或更换。合作创作者额外享受 24 个月延保和优先换新服务。如遇设备故障，请联系对接人或通过 APP 内"帮助与反馈"提交售后申请，通常 3 个工作日内处理完成。',
+    '数据隐私怎么保障？滑行数据会被公开吗？': '数据隐私怎么保障？滑行数据会被公开吗？',
+    '你的滑行数据默认仅自己可见，不会被公开或分享给第三方。排行榜和社区功能需要你主动加入才会展示匿名化的数据。我们遵守 GDPR 和个人信息保护法，数据加密传输和存储，你可以随时在 APP 中导出或删除自己的全部数据。': '你的滑行数据默认仅自己可见，不会被公开或分享给第三方。排行榜和社区功能需要你主动加入才会展示匿名化的数据。我们遵守 GDPR 和个人信息保护法，数据加密传输和存储，你可以随时在 APP 中导出或删除自己的全部数据。',
+    '如何提升佣金等级？有什么快速进阶的方法？': '如何提升佣金等级？有什么快速进阶的方法？',
+    '佣金等级主要按月度有效订单数自动升级：月销 50 单升级到 15%，月销 200 单可申请 20%+ 头部合作。快速进阶建议：① 发布深度评测内容而非简单种草；② 在雪季高峰期集中发布；③ 利用折扣码在粉丝群和私域转化；④ 参与官方发起的话题挑战活动获得流量扶持。对接人可以为你制定个性化的增长方案。': '佣金等级主要按月度有效订单数自动升级：月销 50 单升级到 15%，月销 200 单可申请 20%+ 头部合作。快速进阶建议：① 发布深度评测内容而非简单种草；② 在雪季高峰期集中发布；③ 利用折扣码在粉丝群和私域转化；④ 参与官方发起的话题挑战活动获得流量扶持。对接人可以为你制定个性化的增长方案。',
+    '已复制到剪贴板': '已复制到剪贴板',
+    '素材下载已开始': '素材下载已开始',
+    '© 2026 Heygo. All rights reserved.': '© 2026 Heygo. All rights reserved.',
+    '推荐': '推荐'
+  },
+  en: {
+    '产品速览': 'Product Overview',
+    '内容指南': 'Content Guide',
+    '测试指南': 'Test Guide',
+    '合作政策': 'Partnership',
+    '素材库': 'Assets',
+    'KOL Partner Hub · 创作者合作中心': 'KOL Partner Hub',
+    '这个雪季': 'This season,',
+    'Heygo 跟你': 'Heygo rides',
+    '一起滑行': 'with you',
+    'Heygo 创作者合作中心为你提供产品资料、营销素材、内容指南和全流程支持，帮助你创作出真正打动滑雪爱好者的内容。': 'Your go-to resource for product info, marketing assets, content guidelines, and end-to-end support — everything you need to create content that truly resonates with skiers.',
+    '核心卖点与参数': 'Key features & specs',
+    '方向 话术 规范': 'Angles, scripts, rules',
+    '上手全流程': 'Quick start guide',
+    '佣金与结算': 'Commission & payout',
+    '了解 Heygo 的核心价值，让你的内容更有说服力。': 'Understand Heygo\'s core value proposition to make your content more compelling.',
+    'AI 实时动作分析': 'Real-time AI Motion Analysis',
+    '内置 IMU 传感器 + AI 算法，实时识别转弯类型、刻滑角度、跳台动作，滑行结束即生成专业级分析报告。': 'Built-in IMU sensors + AI algorithms detect turn types, edge angles, and jumps in real time. Pro-level analysis reports generated instantly after your run.',
+    '全维度数据追踪': 'Comprehensive Data Tracking',
+    '记录速度、坡度、垂直落差、滑行距离、转弯频率等 20+ 项数据，每一趟滑行都能量化呈现。': 'Track speed, slope, vertical drop, distance, turn frequency and 20+ more metrics. Every run is quantified.',
+    '进步可视化对比': 'Visual Progress Comparison',
+    'AI 自动对比历史滑行数据，生成进步曲线和针对性改进建议，让训练效果看得见、说得清。': 'AI automatically compares past runs, generates progress curves and tailored improvement suggestions. See your training pay off.',
+    '社区与排行榜': 'Community & Leaderboards',
+    '与好友、全球滑手同台比拼，支持赛道挑战、好友 PK 和区域排行榜，让数据社交化、内容化。': 'Compete with friends and riders worldwide. Track challenges, friend battles, and regional leaderboards — make your data social.',
+    '核心功能': 'Key Features',
+    '推荐内容方向': 'Recommended Content Angles',
+    '首次开箱体验': 'Unboxing & First Impression',
+    '从拆箱、佩戴到首次滑行的完整体验，突出产品质感和上手便捷度。': 'Full experience from unboxing to first run. Highlight build quality and ease of use.',
+    '数据实测挑战': 'Data Test Challenge',
+    '用 Heygo 记录一天滑行数据，展示速度、落差、转弯分析的真实效果。': 'Record a full day of riding with Heygo. Show real speed, vertical drop, and turn analysis results.',
+    '进步对比故事': 'Progress Story',
+    '使用前 vs 使用后 N 周的技术进步对比，用数据证明训练效果。': 'Before-and-after comparison after N weeks. Prove training results with hard data.',
+    '教练/大神视角': 'Pro / Coach Perspective',
+    '从专业角度评测 AI 分析的准确性，对比传统教学方式的差异。': 'Evaluate AI analysis accuracy from a pro perspective. Compare with traditional coaching methods.',
+    'Vlog · 雪季必备单品': 'Vlog · Must-Have Gear This Season',
+    '以第一视角 vlog 记录完整滑雪日，从开箱穿戴到滑行数据复盘全程穿插 Heygo 实时反馈，打造"今年雪季必入科技单品"种草氛围，同时触达滑雪爱好者和科技数码受众。': 'First-person vlog of a full ski day, from unboxing to post-run data review, with Heygo real-time feedback woven throughout. Position as "the must-have tech gear this season" — appeals to both skiers and tech enthusiasts.',
+    '话术模板': 'Script Templates',
+    '短视频口播脚本（30s）': 'Short Video Script (30s)',
+    '复制': 'Copy',
+    '图文种草文案': 'Social Caption',
+    '发布规范': 'Publishing Guidelines',
+    '合规标注：': 'Compliance Disclosure: ',
+    '所有合作内容必须在显著位置标注 #ad 或 #sponsored，视频需在开头 3 秒内口播说明合作关系。': 'All sponsored content must be clearly labeled #ad or #sponsored. Videos must state the partnership verbally within the first 3 seconds.',
+    '品牌提及：': 'Brand Mention: ',
+    '内容中需 @heygo.ai 官方账号，并在文案中使用专属折扣码和购买链接。': 'Tag @heygo.ai in your content and include your unique discount code and purchase link in the caption.',
+    '内容审核：': 'Content Review: ',
+    '发布前请将草稿发送对接人审核，审核通过后方可发布；发布后 24 小时内将链接回传。': 'Send drafts to your contact for review before publishing. Submit the live link within 24 hours of going live.',
+    '素材使用：': 'Asset Usage: ',
+    '仅可使用本素材库中的官方素材，不得擅自修改 Logo 颜色或比例，不得使用竞品对比类负面表述。': 'Use only official assets from this library. Do not alter logo colors or proportions. No negative competitor comparisons.',
+    '从开箱到出报告，五步快速上手 Heygo。': 'From unboxing to your first report — get started in 5 steps.',
+    '下载 Heygo APP': 'Download the Heygo App',
+    'iOS 用户通过 TestFlight 下载体验版：': 'iOS users download the beta via TestFlight: ',
+    '支持 iOS 14+。': 'Requires iOS 14 or later.',
+    '首次打开需允许蓝牙和位置权限': 'Allow Bluetooth and Location permissions on first launch',
+    '蓝牙匹配设备': 'Pair via Bluetooth',
+    '先将设备放入充电仓通电激活，取出后长按设备按钮 3 秒开机，指示灯闪烁即进入配对模式。打开 APP 点击「添加设备」，自动搜索并完成蓝牙连接，首次连接会自动升级固件。': 'Place devices in the charging case to activate. Remove and hold the button for 3 seconds to power on — the LED flashes when pairing mode is active. Tap "Add Device" in the app to auto-connect. Firmware updates automatically on first connection.',
+    '固件升级约需 3-5 分钟，保持 APP 在前台': 'Firmware update takes ~3-5 min. Keep the app in the foreground.',
+    '正确穿戴设备': 'Wear the Device Correctly',
+    '先安装固定夹子，按照设备上标注的 L / R 左右标识，分别卡在左右雪鞋外侧，确保夹子完全卡到底、不松动。穿戴到位后设备会自动识别左右脚。': 'Attach the clips to the outer side of your left and right boots, matching the L / R labels. Clip firmly until fully seated. The device auto-identifies left and right once worn.',
+    '夹子未卡到底会导致数据偏差，穿戴后请检查牢固度': 'Loose clips cause data drift. Double-check the fit before riding.',
+    '开始滑行': 'Start Riding',
+    '穿戴完成后点击 APP 中的「开始滑行」，设备会自动识别滑行状态并开始记录。滑行过程中无需操作手机，设备本地存储数据，断连也不丢失。': 'Tap "Start Run" in the app. The device auto-detects riding and begins recording. No need to touch your phone — data is stored locally and won\'t be lost if Bluetooth disconnects.',
+    '坐缆车时设备会自动暂停记录，不会计入无效数据': 'The device auto-pauses on chairlifts — no dead air in your data.',
+    'Voice Coaching 语音教练体验指南': 'Voice Coaching Experience Guide',
+    '为了让你专注滑行，Heygo 默认不过多语音干扰。想要体验语音教练反馈，请按以下步骤操作：': 'To keep you focused on riding, Heygo stays quiet by default. To experience voice coaching feedback, follow these steps:',
+    '在 APP 中开启': 'Enable ',
+    '【详细】模式': '"Detailed" mode in the app',
+    '滑行时主动模仿业余滑手的常见问题：': 'Ride like an intermediate rider to trigger common issues: ',
+    '甩板尾、缺少上半弧、缺少提前换刃、立刃不稳定、板子突突突、换刃犹豫': 'tail slides, missing upper arc, late edge changes, unstable edge hold, chatter, hesitant transitions',
+    '连续滑行': 'Ride at least ',
+    '至少 8 个弯': '8 turns',
+    '以上，低于 8 个弯不会触发语音': ' in a row. Voice coaching won\'t trigger with fewer than 8 turns.',
+    '滑行停下来后（坐下、停下、脱板走路等），约': 'After you stop (sit down, stop, or walk off your board), wait ~',
+    '20 秒': '20 seconds',
+    '左右会听到语音 Coach 反馈': ' and you\'ll hear your Voice Coach feedback.',
+    '查看 AI 分析报告': 'View Your AI Report',
+    '滑行结束后点击「结束」，APP 会在 10 秒内生成完整分析报告，包括滑行数据、动作识别、转弯分析、进步对比和 AI 改进建议。': 'Tap "Finish" after your run. The app generates a full analysis report within 10 seconds — ride metrics, motion recognition, turn analysis, progress comparison, and AI improvement tips.',
+    'Pro 会员可解锁深度分析和无限云端存储': 'Pro unlocks deep analytics and unlimited cloud storage',
+    '固件升级提醒': 'Firmware Update Reminder',
+    '设备硬件上出现固件升级提示。': 'A firmware update prompt appears on the device hardware.',
+    '提醒：先不要升级，除非另行给到更新指南。': 'Note: Do not update yet unless you receive a separate update guide.',
+    '电池续航担忧': 'Battery Life Concerns',
+    '担心低温环境下电池续航不足。': 'Worried about battery in cold temperatures.',
+    '放心：Heygo 设备经过极端低温测试，电池可在零下 40 摄氏度环境下正常使用，常规雪场温度无需担忧续航。': 'No worries: Heygo is tested in extreme cold. The battery operates down to -40°C. No need to stress about battery life at normal resort temperatures.',
+    '语音提示异常': 'Voice Coaching Issues',
+    '没有听到语音提示，或反复提醒同一个问题。': 'No voice feedback, or the same issue is repeated.',
+    '说明：Heygo 会按问题的优先级和严重性排序，可能重复提醒较高优先级的问题，属正常现象。多滑几趟多试几次，即会触发其他问题的语音提示。': 'Heygo prioritizes issues by severity. It may repeat high-priority issues — this is normal. Ride more runs to trigger feedback on other issues.',
+    '报告生成失败': 'Report Fails to Load',
+    '滑行结束后报告一直加载或生成失败。': 'The report keeps loading or fails to generate after your run.',
+    '解决：确保手机网络连接正常，APP 更新到最新版本。若数据量较大（超过 4 小时滑行），报告生成可能需要 30-60 秒，请耐心等待。': 'Make sure your phone is online and the app is updated. For large sessions (4+ hours), report generation may take 30-60 seconds. Please be patient.',
+    '透明的佣金机制和清晰的结算流程，让合作更安心。': 'Transparent commission tiers and a clear payout process — partner with confidence.',
+    '基础合作': 'Base Partnership',
+    '每笔成功订单 10% 佣金，你的粉丝同时享受 $10 专属折扣，转化更轻松。': '10% commission on every sale. Your followers also get a $10 exclusive discount — easier conversion.',
+    '10% 订单佣金': '10% commission per sale',
+    '粉丝专属 $10 折扣码': '$10 follower discount code',
+    '实时数据后台': 'Real-time dashboard',
+    '营销素材支持': 'Marketing asset kit',
+    '活动合作': 'Campaign Partnership',
+    '限时': 'Limited',
+    '高佣': 'High-Tier',
+    '在促销季或主题活动期间，Heygo 释放更有利的合作条件，包括更高佣金比例和额外流量扶持。': 'During holiday seasons or themed campaigns, Heygo unlocks enhanced terms including higher commission rates and extra traffic support.',
+    '活动期间限时高佣': 'Limited-time elevated commission',
+    '专属活动素材包': 'Campaign-specific asset pack',
+    '官方账号流量扶持': 'Official account shoutouts',
+    '优先参与品牌活动': 'Priority access to brand events',
+    '加码合作': 'Premium Partnership',
+    '定制': 'Custom',
+    '方案': 'Deal',
+    '月销单量较高或粉丝体量较大的 KOL，可与 Heygo 团队单独商讨深度合作方式，一事一议。': 'For high-volume creators or large-following KOLs, we discuss deep partnership terms on a case-by-case basis.',
+    '一事一议定制佣金': 'Custom commission rates',
+    '联名款产品合作机会': 'Co-branded product opportunities',
+    '线下活动 / 雪场资源': 'Events / resort access',
+    '1对1 专属运营对接': '1:1 dedicated account manager',
+    '结算流程': 'Payout Process',
+    '订单追踪': 'Order Tracking',
+    '通过专属折扣码或追踪链接自动归因，数据后台实时可见': 'Attribution via your unique discount code or tracking link. Real-time dashboard.',
+    '月度对账': 'Monthly Reconciliation',
+    '次月 1-5 日生成上月结算单，确认无退款订单后锁定金额': 'Statements generated 1st-5th of the following month. Amount locked after confirming no refunds.',
+    '发票/信息': 'Invoice / Details',
+    '提交收款信息和发票（如需），支持 PayPal 和银行转账': 'Submit payout details and invoice (if needed). PayPal and bank transfer supported.',
+    '佣金打款': 'Commission Paid',
+    '次月 15 日前完成打款，到账时间视收款方式 1-3 个工作日': 'Paid by the 15th of the following month. Arrival time: 1-3 business days depending on method.',
+    '营销素材库': 'Asset Library',
+    '官方品牌素材一键下载，使用前请遵守品牌规范。': 'Official brand assets available for download. Please follow brand guidelines before use.',
+    '全部': 'All',
+    'Logo & 品牌规范': 'Logo & Brand',
+    '产品图': 'Product Images',
+    '产品视频': 'Product Videos',
+    'Heygo Logo · 荧光绿': 'Heygo Logo · Neon Green',
+    '矢量 Logo，深色背景使用，支持无限缩放': 'Vector logo for dark backgrounds. Infinitely scalable.',
+    '下载': 'Download',
+    'Heygo Logo · 黑色版': 'Heygo Logo · Black',
+    '矢量 Logo，浅色背景使用，支持无限缩放': 'Vector logo for light backgrounds. Infinitely scalable.',
+    '品牌视觉规范手册': 'Brand Guidelines PDF',
+    'Logo 使用规范、色值、字体、排版指南，创作前必读': 'Logo usage, colors, typography, layout. Read before creating.',
+    '品牌色值与字体包': 'Brand Colors & Fonts Pack',
+    '官方色板 HEX/RGB、字体文件、图标库合集': 'Official color palette (HEX/RGB), fonts, and icon library.',
+    '产品场景图 · 雪山滑行': 'Product Shot · Mountain Ride',
+    '滑雪者佩戴 Heygo 滑行实拍，适合封面和主视觉': 'Rider wearing Heygo in action. Great for covers and hero visuals.',
+    'APP 数据报告界面': 'App Report Screen',
+    '手机端滑行分析报告截图，展示数据可视化效果': 'Screenshot of the mobile analysis report. Shows data visualization.',
+    '雪山大场景背景图': 'Mountain Background',
+    '开阔雪山滑雪场景，适合视频封面和图文背景': 'Wide ski mountain scene. Perfect for video covers and post backgrounds.',
+    '产品宣传片 · 60s': 'Product Promo · 60s',
+    '官方品牌宣传片，可直接用于视频内容素材': 'Official brand promo video. Ready-to-use footage.',
+    'APP 功能演示 · 30s': 'App Demo · 30s',
+    '手机 APP 操作流程录屏，展示数据报告生成过程': 'Screen recording of the app workflow. Shows report generation.',
+    '常见问题': 'FAQ',
+    '关于产品使用和合作的高频问题，先看这里。': 'Quick answers to common questions about the product and partnership.',
+    'Heygo 适合什么水平的滑雪者使用？': 'What skill level is Heygo for?',
+    'Heygo 适合所有水平的滑雪者。初中级滑手可以通过数据反馈快速纠正动作、建立正确的肌肉记忆；中高级滑手可以精细优化刻滑角度和线路效率；教练和培训师可以用数据辅助教学，让学员直观看到进步。自由式玩家还可以记录跳台和道具动作的空中数据。': 'Heygo is for riders of all levels. Beginners and intermediates get instant feedback to build muscle memory. Advanced riders fine-tune edge angles and line efficiency. Coaches use data to track student progress. Freestyle riders can capture jump and trick metrics.',
+    '设备防水吗？低温环境能正常工作吗？': 'Is the device waterproof? Does it work in cold weather?',
+    'Heygo 达到 IP67 防水等级，可以承受雪场的雨雪和飞溅水花。设备经过 -20°C 低温测试，在常规雪场温度下均可正常工作。极寒环境（-20°C 以下）建议将设备放在内层衣物附近保暖，续航会有所下降但功能不受影响。': 'Heygo has an IP67 waterproof rating — it handles snow, rain, and splashes. It\'s tested down to -20°C and works fine at typical resort temperatures. In extreme cold (below -20°C), keep it close to your base layer for warmth. Battery life drops slightly but functionality is unaffected.',
+    '合作佣金怎么计算？退款订单会扣佣金吗？': 'How is commission calculated? Do refunded orders deduct commission?',
+    '佣金按实际支付金额（扣除运费和税费后）乘以对应佣金比例计算。发生退款的订单会在结算时扣除对应佣金，以最终确认收货且无退款的订单为准。你可以在创作者后台实时查看每笔订单的状态和预估佣金。': 'Commission is calculated on the net order value (after shipping and taxes) times your rate. Refunded orders are deducted at settlement. Only confirmed, non-refunded orders count. You can track every order and estimated commission in real-time in your creator dashboard.',
+    '内容发布前需要审核吗？审核要多久？': 'Do I need content review before publishing? How long does it take?',
+    '是的，所有合作内容发布前需将草稿发送对接人审核。常规图文内容审核时间为 24 小时内，视频内容为 48 小时内。审核主要关注产品信息准确性、合规标注和品牌规范，不会干预你的创作风格和个人观点。紧急发布可提前沟通加急处理。': 'Yes, all sponsored content needs review before going live. Standard posts are reviewed within 24 hours; videos within 48 hours. We check product accuracy, compliance labels, and brand guidelines — we don\'t interfere with your creative voice. Rush reviews available upon request.',
+    '可以同时和其他滑雪品牌合作吗？': 'Can I partner with other ski brands?',
+    '基础合作不限制你与其他非直接竞争品牌的合作。但在 Heygo 合作内容发布前后 7 天内，不建议发布直接竞品（滑雪数据追踪/AI 分析类产品）的推广内容。头部合作可能包含独家条款，具体以合作协议为准。': 'Base partnership doesn\'t restrict you from working with non-competing brands. However, we ask that you avoid promoting direct competitors (ski tracking / AI analysis products) within 7 days of a Heygo post. Premium deals may include exclusivity terms — see your agreement.',
+    '设备坏了怎么办？有保修期吗？': 'What if the device breaks? Is there a warranty?',
+    'Heygo 提供 12 个月官方质保，非人为损坏可免费维修或更换。合作创作者额外享受 24 个月延保和优先换新服务。如遇设备故障，请联系对接人或通过 APP 内"帮助与反馈"提交售后申请，通常 3 个工作日内处理完成。': 'Heygo includes a 12-month warranty covering manufacturing defects. Partner creators get an extended 24-month warranty and priority replacement. For issues, contact your point person or submit a ticket via "Help & Feedback" in the app. Typically resolved within 3 business days.',
+    '数据隐私怎么保障？滑行数据会被公开吗？': 'How is my data protected? Is my riding data public?',
+    '你的滑行数据默认仅自己可见，不会被公开或分享给第三方。排行榜和社区功能需要你主动加入才会展示匿名化的数据。我们遵守 GDPR 和个人信息保护法，数据加密传输和存储，你可以随时在 APP 中导出或删除自己的全部数据。': 'Your riding data is private by default. It is never shared publicly or with third parties. Leaderboards and community features only show anonymized data when you opt in. We comply with GDPR and data protection regulations. Data is encrypted in transit and at rest. You can export or delete all your data anytime in the app.',
+    '如何提升佣金等级？有什么快速进阶的方法？': 'How do I increase my commission rate? Any tips to level up faster?',
+    '佣金等级主要按月度有效订单数自动升级：月销 50 单升级到 15%，月销 200 单可申请 20%+ 头部合作。快速进阶建议：① 发布深度评测内容而非简单种草；② 在雪季高峰期集中发布；③ 利用折扣码在粉丝群和私域转化；④ 参与官方发起的话题挑战活动获得流量扶持。对接人可以为你制定个性化的增长方案。': 'Your commission tier auto-updates based on monthly qualifying sales: 50 orders/month unlocks 15%, 200+ orders qualifies for 20%+ premium partnership. Tips to grow faster: (1) Publish in-depth reviews, not just shills. (2) Time posts around peak ski season. (3) Use your discount code in fan groups and private channels. (4) Join official hashtag challenges for traffic support. Your account manager can build a personalized growth plan.',
+    '已复制到剪贴板': 'Copied to clipboard',
+    '素材下载已开始': 'Download started',
+    '© 2026 Heygo. All rights reserved.': '© 2026 Heygo. All rights reserved.',
+    '推荐': 'RECOMMENDED'
+  }
+};
+
+let currentLang = 'zh';
+
+function switchLang(lang) {
+  if (lang === currentLang) return;
+  currentLang = lang;
+
+  // Update nav buttons
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.lang === lang);
+  });
+
+  // Update html lang attribute
+  document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+
+  // Update page title
+  document.title = lang === 'zh'
+    ? 'Heygo KOL Partner Hub | 创作者合作中心'
+    : 'Heygo KOL Partner Hub';
+
+  // Replace all text content
+  const dict = translations[lang];
+
+  // Walk through all elements and replace text nodes
+  const walker = document.createTreeWalker(
+    document.body,
+    NodeFilter.SHOW_TEXT,
+    null,
+    false
+  );
+
+  const textNodes = [];
+  while (walker.nextNode()) {
+    const node = walker.currentNode;
+    const trimmed = node.textContent.trim();
+    if (trimmed && dict[trimmed] !== undefined) {
+      textNodes.push({node, original: trimmed, newText: dict[trimmed]});
+    }
+  }
+
+  textNodes.forEach(({node, newText}) => {
+    // Preserve leading/trailing whitespace
+    const original = node.textContent;
+    const leading = original.match(/^\s*/)[0];
+    const trailing = original.match(/\s*$/)[0];
+    node.textContent = leading + newText + trailing;
+  });
+
+  // Update CSS pseudo-element content for featured badge
+  if (lang === 'en') {
+    document.documentElement.style.setProperty('--featured-label', 'RECOMMENDED');
+  } else {
+    document.documentElement.style.setProperty('--featured-label', '推荐');
+  }
+
+  // Update Hero title (has HTML tags, needs special handling)
+  const heroTitle = document.querySelector('.hero h1');
+  if (heroTitle) {
+    heroTitle.innerHTML = lang === 'zh'
+      ? '这个雪季<br>Heygo 跟你<em>一起滑行</em>'
+      : 'This season,<br>Heygo rides <em>with you</em>';
+  }
+
+  // Update toast text
+  const toast = document.getElementById('toast');
+  if (toast) toast.textContent = dict['已复制到剪贴板'];
+
+  // Update lightbox aria labels
+  const closeBtn = document.querySelector('.lightbox-close');
+  const prevBtn = document.querySelector('.lightbox-prev');
+  const nextBtn = document.querySelector('.lightbox-next');
+  if (closeBtn) closeBtn.setAttribute('aria-label', lang === 'zh' ? '关闭' : 'Close');
+  if (prevBtn) prevBtn.setAttribute('aria-label', lang === 'zh' ? '上一张' : 'Previous');
+  if (nextBtn) nextBtn.setAttribute('aria-label', lang === 'zh' ? '下一张' : 'Next');
+}
+
 // ===== Nav scroll effect =====
 const nav = document.getElementById('nav');
 window.addEventListener('scroll', () => {
