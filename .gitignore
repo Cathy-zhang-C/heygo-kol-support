@@ -1,3 +1,3 @@
-_shots/
-_backup/
-.DS_Store
+# Original large video files (over GitHub 100MB limit) - keep only compressed versions
+assets/feishu-materials/video/*.mp4
+!assets/feishu-materials/video/*-compressed.mp4
